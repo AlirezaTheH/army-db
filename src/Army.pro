@@ -25,10 +25,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        login.cpp
+    message_dialog.cpp \
+    login_window.cpp \
+    limit_checker.cpp
 
 HEADERS += \
-        login.h
+    message_dialog.h \
+    login_window.h \
+    limit_checker.h \
+    global_storage.h \
+    roles.h \
+    consts.h
 
 FORMS += \
-        login.ui
+    login_window.ui
+
+SUBDIRS += \
+    Army.pro
