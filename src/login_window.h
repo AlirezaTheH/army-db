@@ -17,7 +17,7 @@ public:
     ~LoginWindow();
 
 private:
-    void checkLogin(const QString &username, const QString &password);
+    bool checkLogin(const QString &username, const QString &password);
     void doLogin(const QString &username, const QString &password);
 
 private slots:
