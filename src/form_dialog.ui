@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="pushButton_done">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -26,7 +26,7 @@
     <string>Done</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="pushButton_cancel">
    <property name="geometry">
     <rect>
      <x>210</x>
@@ -39,7 +39,7 @@
     <string>Cancel</string>
    </property>
   </widget>
-  <widget class="QTableWidget" name="tableWidget">
+  <widget class="QTableWidget" name="tableWidget_properties">
    <property name="geometry">
     <rect>
      <x>80</x>
