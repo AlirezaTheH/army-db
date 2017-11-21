@@ -29,7 +29,8 @@ SOURCES += \
     login_window.cpp \
     limit_checker.cpp \
     form_dialog.cpp \
-    info_window.cpp
+    manager.cpp \
+    info_dialog.cpp
 
 HEADERS += \
     message_dialog.h \
@@ -40,12 +41,13 @@ HEADERS += \
     consts.h \
     form_dialog.h \
     item.h \
-    info_window.h
+    manager.h \
+    info_dialog.h
 
 FORMS += \
     login_window.ui \
     form_dialog.ui \
-    info_window.ui
+    info_dialog.ui
 
 SUBDIRS += \
     Army.pro

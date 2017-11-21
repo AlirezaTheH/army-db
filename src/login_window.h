@@ -18,7 +18,7 @@ public:
 
 private:
     bool checkLogin(const QString &username, const QString &password);
-    void doLogin(const QString &username, const QString &password);
+    bool doLogin(const QString &username, const QString &password);
 
 private slots:
     void on_pushButton_login_clicked();

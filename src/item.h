@@ -112,7 +112,7 @@ enum class ItemType
 {
     String,
     Integer,
-    Float,
+    Real,
     Boolean,
     Enumeration
 };
