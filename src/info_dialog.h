@@ -19,6 +19,12 @@ public:
         const QList<QList<QVariant>> &dataRows, QWidget *parent = 0);
     ~InfoDialog();
 
+private slots:
+    void on_pushButton_create_clicked();
+
+private:
+    void showData();
+
 private:
     Ui::InfoDialog *ui;
     QList<Item> dataColumns;

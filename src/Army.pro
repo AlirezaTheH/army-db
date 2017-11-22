@@ -30,7 +30,8 @@ SOURCES += \
     limit_checker.cpp \
     form_dialog.cpp \
     manager.cpp \
-    info_dialog.cpp
+    info_dialog.cpp \
+    item_factory.cpp
 
 HEADERS += \
     message_dialog.h \
@@ -42,7 +43,8 @@ HEADERS += \
     form_dialog.h \
     item.h \
     manager.h \
-    info_dialog.h
+    info_dialog.h \
+    item_factory.h
 
 FORMS += \
     login_window.ui \
