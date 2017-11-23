@@ -41,7 +41,7 @@ public:
         return _type;
     }
 
-    bool multivalue() const
+    bool isMultivalue() const
     {
         return _multivalue;
     }
@@ -54,14 +54,14 @@ public:
     template <typename T>
     const T value() const
     {
-        if (multivalue())
+        if (isMultivalue())
             throw std::runtime_error("This item is a multivalue item");
         return qvariant_cast<T> (_value);
     }
 
     void setValue(const QVariant &value)
     {
-        if (multivalue())
+        if (isMultivalue())
             throw std::runtime_error("This item is a multivalue item");
         _value = value;
     }
@@ -69,7 +69,7 @@ public:
     template<typename T>
     const QList<T> values() const
     {
-        if (!multivalue())
+        if (!isMultivalue())
             throw std::runtime_error("This item is not a multivalue item");
         QList<T> result;
         for (auto x : _values)
@@ -79,7 +79,7 @@ public:
 
     void setValues(const QList<QVariant> &values)
     {
-        if (!multivalue())
+        if (!isMultivalue())
             throw std::runtime_error("This item is not a multivalue item");
         _values = values;
     }
