@@ -3,6 +3,9 @@
 
 #include <QtCore>
 
+#include "consts.h"
+#include "global_storage.h"
+#include "roles.h"
 #include "form_dialog.h"
 #include "message_dialog.h"
 
@@ -17,9 +20,18 @@ InfoDialog::InfoDialog(const QString &title, const QList<Item> &dataColumns,
     ui->setupUi(this);
     setFixedSize(size());
     setWindowTitle(title);
+
     ui->tableWidget_data->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget_data->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableWidget_data->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    if (GlobalStorage::instance()->get<int>(USER_ROLE) == Roles::Guest)
+    {
+        ui->pushButton_create->setVisible(false);
+        ui->pushButton_edit->setVisible(false);
+        ui->pushButton_delete->setVisible(false);
+    }
+
     showData();
 }
 

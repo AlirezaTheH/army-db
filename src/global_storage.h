@@ -9,6 +9,7 @@ class GlobalStorage
 public:
     static GlobalStorage *instance()
     {
+        static GlobalStorage *ins = new GlobalStorage();
         return ins;
     }
 
@@ -29,11 +30,8 @@ private:
     GlobalStorage() {}
 
 private:
-    static GlobalStorage *ins;
     QMap<QString, QVariant> data;
 };
-
-GlobalStorage *GlobalStorage::ins = new GlobalStorage();
 
 
 #endif // GLOBAL_STORAGE_H
