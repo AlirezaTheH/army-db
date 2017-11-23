@@ -20,6 +20,9 @@ public:
 
     Item createBoolean(const QString &name, const bool &value) const;
     Item createBoolean(const QString &name, const QList<bool> &values) const;
+
+    Item createEnum(const QString &name, const QStringList &attrs, const int &value) const;
+    Item createEnum(const QString &name, const QStringList &attrs, const QList<int> &values) const;
 };
 
 #endif // ITEM_FACTORY_H

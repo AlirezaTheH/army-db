@@ -15,6 +15,7 @@ const QString MAXIMUM_LENGTH = "MAXIMUM_LENGTh";
 const QString LIMIT_MINIMUM = "LIMIT_MINIMUM";
 const QString LIMIT_MAXIMUM = "LIMIT_MAXIMUM";
 const QString PATTERN = "PATTERN";
+const QString ENUM_ATTRS = "ENUM_ATTRS";
 
 
 #endif // CONSTS_H

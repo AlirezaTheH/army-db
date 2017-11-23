@@ -91,6 +91,8 @@ void InfoDialog::on_pushButton_create_clicked()
     for (int i = 0; i < items.size(); i++)
     {
         QTableWidgetItem *tableItem = new QTableWidgetItem(items[i]->value<QString>());
+        if (items[i]->type() == ItemType::Enumeration)
+            tableItem->setText(items[i]->property<QStringList>(ENUM_ATTRS)[items[i]->value<int>()]);
         tableItem->setTextAlignment(Qt::AlignCenter);
         ui->tableWidget_data->setItem(row, i, tableItem);
     }
@@ -126,6 +128,11 @@ void InfoDialog::on_pushButton_edit_clicked()
             case ItemType::Boolean:
                 item->setValue((text == "true") ? true : false);
                 break;
+            case ItemType::Enumeration:
+                item->setValue(item->property<QStringList>(ENUM_ATTRS).indexOf(text));
+                break;
+            default:
+                break;
         }
     }
 
@@ -140,6 +147,8 @@ void InfoDialog::on_pushButton_edit_clicked()
     for (int i = 0; i < items.size(); i++)
     {
         QTableWidgetItem *tableItem = new QTableWidgetItem(items[i]->value<QString>());
+        if (items[i]->type() == ItemType::Enumeration)
+            tableItem->setText(items[i]->property<QStringList>(ENUM_ATTRS)[items[i]->value<int>()]);
         tableItem->setTextAlignment(Qt::AlignCenter);
         ui->tableWidget_data->setItem(row, i, tableItem);
     }

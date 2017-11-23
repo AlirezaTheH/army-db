@@ -106,3 +106,40 @@ Item ItemFactory::createBoolean(const QString &name, const QList<bool> &values) 
         variantValues
     );
 }
+
+
+Item ItemFactory::createEnum(const QString &name, const QStringList &attrs, const int &value) const
+{
+    Item item(
+        ItemType::Enumeration,
+        name,
+        QList<QString> ({ENUM_ATTRS, MINIMUM, MAXIMUM}),
+        value
+    );
+
+    item.setProperty(ENUM_ATTRS, attrs);
+    item.setProperty(MINIMUM, 0);
+    item.setProperty(MAXIMUM, attrs.size() - 1);
+
+    return item;
+}
+
+Item ItemFactory::createEnum(const QString &name, const QStringList &attrs, const QList<int> &values) const
+{
+    QList<QVariant> variantValues;
+    for (auto x : values)
+        variantValues.append(x);
+
+    Item item(
+        ItemType::Enumeration,
+        name,
+        QList<QString> ({ENUM_ATTRS, MINIMUM, MAXIMUM}),
+        variantValues
+    );
+
+    item.setProperty(ENUM_ATTRS, attrs);
+    item.setProperty(MINIMUM, 0);
+    item.setProperty(MAXIMUM, attrs.size() - 1);
+
+    return item;
+}

@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QLineEdit>
 #include <QCheckBox>
+#include <QComboBox>
 
 #include "consts.h"
 #include "item.h"
@@ -38,10 +39,10 @@ bool FormDialog::wasDone() const
 void FormDialog::setupProperties()
 {
     ui->tableWidget_properties->setRowCount(items.size());
-    QWidget *tableItem;
 
     for (int i = 0; i < items.size(); i++)
     {
+        QWidget *tableItem = nullptr;
         ui->tableWidget_properties->setItem(i, 0, new QTableWidgetItem(items[i]->name()));
 
         switch (items[i]->type())
@@ -58,6 +59,11 @@ void FormDialog::setupProperties()
             case ItemType::Boolean:
                 tableItem = new QCheckBox();
                 ((QCheckBox*) tableItem)->setChecked(items[i]->value<bool>());
+                break;
+            case ItemType::Enumeration:
+                tableItem = new QComboBox();
+                ((QComboBox*) tableItem)->addItems(items[i]->property<QStringList>(ENUM_ATTRS));
+                ((QComboBox*) tableItem)->setCurrentIndex(items[i]->value<int>());
                 break;
             default:
                 break;
@@ -157,6 +163,11 @@ void FormDialog::on_pushButton_done_clicked()
             case ItemType::Boolean:
                 items[i]->setValue(((QCheckBox *) cell)->isChecked());
                 break;
+
+            case ItemType::Enumeration:
+                items[i]->setValue(((QComboBox*) cell)->currentIndex());
+                break;
+
             default:
                 break;
         }
