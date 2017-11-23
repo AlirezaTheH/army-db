@@ -26,7 +26,14 @@ QString LimitChecker::check(const QString &text, bool nullOrEmpty, int minLength
 
     if (maxLength != -1)
         if (text.size() > maxLength)
-            return QString("must be at most %1 charecters long").arg(minLength);
+            return QString("must be at most %1 charecters long").arg(maxLength);
+
+    if (!pattern.isEmpty() && !pattern.isNull())
+    {
+        QRegExp regex(pattern);
+        if (regex.indexIn(text) == -1)
+            return QString("does not match with pattern: \n\"%1\"").arg(pattern);
+    }
 
     return "";
 }
@@ -41,7 +48,7 @@ QString LimitChecker::check(double number, bool limitMinimum, bool limitMaximum,
 
     if (limitMaximum)
         if (number > maximum)
-            return QString("can be at most %1").arg(minimum);
+            return QString("can be at most %1").arg(maximum);
 
     return "";
 }

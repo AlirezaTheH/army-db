@@ -13,6 +13,9 @@ enum class ItemType;
 class Item
 {
 public:
+
+    Item() {}
+
     Item(const ItemType &type, const QString &name,
             const QList<QString> &allowedProperties, const QVariant &value):
         _multivalue(false),

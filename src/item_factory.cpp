@@ -13,7 +13,7 @@ Item ItemFactory::createString(const QString &name, const QString &value) const
     return Item(
         ItemType::String,
         name,
-        QList<QString> ({ALLOW_NULL, MINIMUM_LENGTH, MAXIMUM_LENGTH}),
+        QList<QString> ({ALLOW_NULL, MINIMUM_LENGTH, MAXIMUM_LENGTH, PATTERN}),
         value
     );
 }

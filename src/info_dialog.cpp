@@ -4,6 +4,7 @@
 #include <QtCore>
 
 #include "form_dialog.h"
+#include "message_dialog.h"
 
 
 InfoDialog::InfoDialog(const QString &title, const QList<Item> &dataColumns,
@@ -59,6 +60,86 @@ void InfoDialog::showData()
 
 void InfoDialog::on_pushButton_create_clicked()
 {
-    FormDialog creationForm(this);
+    QList<Item*> items;
+    for (auto item : dataColumns)
+    {
+        Item *i = new Item();
+        *i = item;
+        items.append(i);
+    }
+
+    FormDialog creationForm("Create " + windowTitle(), items, this);
     creationForm.exec();
+    if (!creationForm.wasDone())
+        return;
+
+    int row = ui->tableWidget_data->rowCount();
+    ui->tableWidget_data->insertRow(row);
+
+    for (int i = 0; i < items.size(); i++)
+    {
+        QTableWidgetItem *tableItem = new QTableWidgetItem(items[i]->value<QString>());
+        tableItem->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget_data->setItem(row, i, tableItem);
+    }
+}
+
+void InfoDialog::on_pushButton_edit_clicked()
+{
+    if (ui->tableWidget_data->currentRow() == -1)
+    {
+        MessageDialog::instance()->err("Please select an entry to edit!", this);
+        return;
+    }
+
+    QList<Item*> items;
+    for (int i = 0; i < dataColumns.size(); i++)
+    {
+        Item *item = new Item();
+        *item = dataColumns[i];
+        items.append(item);
+
+        QString text = ui->tableWidget_data->item(ui->tableWidget_data->currentRow(), i)->text();
+        switch (item->type())
+        {
+            case ItemType::String:
+                item->setValue(text);
+                break;
+            case ItemType::Integer:
+                item->setValue(text.toInt());
+                break;
+            case ItemType::Real:
+                item->setValue(text.toDouble());
+                break;
+            case ItemType::Boolean:
+                item->setValue((text == "true") ? true : false);
+                break;
+        }
+    }
+
+    FormDialog editionForm("Edit " + windowTitle(), items, this);
+    editionForm.exec();
+    if (!editionForm.wasDone())
+        return;
+
+
+    int row = ui->tableWidget_data->currentRow();
+
+    for (int i = 0; i < items.size(); i++)
+    {
+        QTableWidgetItem *tableItem = new QTableWidgetItem(items[i]->value<QString>());
+        tableItem->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget_data->setItem(row, i, tableItem);
+    }
+}
+
+void InfoDialog::on_pushButton_delete_clicked()
+{
+    if (ui->tableWidget_data->currentRow() == -1)
+    {
+        MessageDialog::instance()->err("Please select an entry to delete!", this);
+        return;
+    }
+
+    ui->tableWidget_data->removeRow(ui->tableWidget_data->currentRow());
 }

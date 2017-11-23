@@ -22,6 +22,10 @@ public:
 private slots:
     void on_pushButton_create_clicked();
 
+    void on_pushButton_edit_clicked();
+
+    void on_pushButton_delete_clicked();
+
 private:
     void showData();
 
