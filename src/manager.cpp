@@ -127,9 +127,6 @@ Action Manager::execBasesWindow()
     name.setProperty(MAXIMUM_LENGTH, -1);
     name.setProperty(PATTERN, "");
 
-    // country
-    Item country = itemFactory.createEnum("country", COUNTRIES, 0);
-
     // position latitude
     Item positionLatitude = itemFactory.createReal("position_latitude", 30);
     positionLatitude.setProperty(LIMIT_MINIMUM, true);
@@ -167,7 +164,6 @@ Action Manager::execBasesWindow()
 
 
     columns.append(name);
-    columns.append(country);
     columns.append(positionLatitude);
     columns.append(positionLongitude);
     columns.append(radius);
@@ -178,7 +174,6 @@ Action Manager::execBasesWindow()
     {
         QList<QVariant> items;
         items.append("Base_" + QString::number(i));
-        items.append(COUNTRIES[i % COUNTRIES.size()]);
         items.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i).toDouble());
         items.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i).toDouble());
         items.append(100 + i);
