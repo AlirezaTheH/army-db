@@ -4,12 +4,21 @@
 #include <QtCore>
 
 
-enum class ActionType;
+enum class ActionType
+{
+    None,
+    ShowBattlefields,
+    ShowBases,
+    ShowArmies,
+    ShowTroopers,
+    ShowTrooperSkills
+};
+
 
 class Action
 {
 public:
-    Action(const ActionType &type);
+    Action(const ActionType &type = ActionType::None);
 
     ActionType type() const;
     QString name() const;
@@ -19,14 +28,5 @@ private:
     QStringList names;
 };
 
-
-enum class ActionType
-{
-    None,
-    ShowBases,
-    ShowArmies,
-    ShowTroopers,
-    ShowTrooperSkills
-};
 
 #endif // ACTION_H

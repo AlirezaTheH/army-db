@@ -1,6 +1,7 @@
 #include "manager.h"
 
 #include <QtCore>
+#include <random>
 
 #include "consts.h"
 #include "info_dialog.h"
@@ -11,6 +12,46 @@ Manager::Manager()
 }
 
 void Manager::exec()
+{
+    actionsHistory.push_back(Action(ActionType::ShowBattlefields));
+    Action action;
+
+    while (!actionsHistory.empty())
+    {
+        action = actionsHistory.back();
+        if (action.type() == ActionType::None)
+        {
+            actionsHistory.pop_back();
+            actionsHistory.pop_back();
+            continue;
+        }
+
+        switch (action.type()) {
+            case ActionType::ShowBattlefields:
+                action = execBattlefieldsWindow();
+                break;
+            case ActionType::ShowBases:
+                action = execBasesWindow();
+                break;
+            case ActionType::ShowArmies:
+                action = execBasesWindow();
+                break;
+            case ActionType::ShowTroopers:
+                action = execTroopersWindow();
+                break;
+            case ActionType::ShowTrooperSkills:
+                action = execTrooperSkillsWindow();
+                break;
+            default:
+                break;
+        }
+
+        actionsHistory.push_back(action);
+    }
+}
+
+
+Action Manager::execBattlefieldsWindow()
 {
     QList<Item> columns;
     QList<QList<QVariant>> rows;
@@ -67,11 +108,99 @@ void Manager::exec()
         rows.append(items);
     }
 
-    InfoDialog battleFieldInfo("BattleField", columns, rows, QList<Action>({Action(ActionType::ShowBases)}));
-    battleFieldInfo.exec();
-    Action selectedAction = battleFieldInfo.getSelectedAction();
-    if (selectedAction.type() != ActionType::None)
+    InfoDialog battleFieldsInfo("BattleField", columns, rows, QList<Action>({Action(ActionType::ShowBases)}));
+    battleFieldsInfo.exec();
+    Action selectedAction = battleFieldsInfo.getSelectedAction();
+    return selectedAction;
+}
+
+
+Action Manager::execBasesWindow()
+{
+    QList<Item> columns;
+    QList<QList<QVariant>> rows;
+
+    // name
+    Item name = itemFactory.createString("name", "Base_0");
+    name.setProperty(ALLOW_NULL, false);
+    name.setProperty(MINIMUM_LENGTH, -1);
+    name.setProperty(MAXIMUM_LENGTH, -1);
+    name.setProperty(PATTERN, "");
+
+    // country
+    Item country = itemFactory.createEnum("country", ALL_COUNTRIES, 0);
+
+    // position latitude
+    Item positionLatitude = itemFactory.createReal("position_latitude", 30);
+    positionLatitude.setProperty(LIMIT_MINIMUM, true);
+    positionLatitude.setProperty(MINIMUM, 25.2919f);
+    positionLatitude.setProperty(LIMIT_MAXIMUM, true);
+    positionLatitude.setProperty(MAXIMUM, 39.6482f);
+
+    // position latitude
+    Item positionLongitude = itemFactory.createReal("position_longitude", 50);
+    positionLongitude.setProperty(LIMIT_MINIMUM, true);
+    positionLongitude.setProperty(MINIMUM, 44.7653f);
+    positionLongitude.setProperty(LIMIT_MAXIMUM, true);
+    positionLongitude.setProperty(MAXIMUM, 61.4949f);
+
+    // radius
+    Item radius = itemFactory.createReal("radius", 1000);
+    radius.setProperty(LIMIT_MINIMUM, true);
+    radius.setProperty(MINIMUM, 100);
+    radius.setProperty(LIMIT_MAXIMUM, true);
+    radius.setProperty(MAXIMUM, 20000);
+
+    // vehicle capacity
+    Item vehicleCapacity = itemFactory.createInteger("vehicle_capacity", 100);
+    vehicleCapacity.setProperty(LIMIT_MINIMUM, true);
+    vehicleCapacity.setProperty(MINIMUM, 0);
+    vehicleCapacity.setProperty(LIMIT_MAXIMUM, true);
+    vehicleCapacity.setProperty(MAXIMUM, 200);
+
+    // soldier capacity
+    Item soldierCapacity = itemFactory.createInteger("soldier_capacity", 200);
+    soldierCapacity.setProperty(LIMIT_MINIMUM, true);
+    soldierCapacity.setProperty(MINIMUM, 0);
+    soldierCapacity.setProperty(LIMIT_MAXIMUM, true);
+    soldierCapacity.setProperty(MAXIMUM, 500);
+
+
+    columns.append(name);
+    columns.append(country);
+    columns.append(positionLatitude);
+    columns.append(positionLongitude);
+    columns.append(radius);
+    columns.append(vehicleCapacity);
+    columns.append(soldierCapacity);
+
+    for (int i = 0; i < 10; i++)
     {
-        qDebug() << selectedAction.name();
+        QList<QVariant> items;
+        items.append("Base_" + QString::number(i));
+        items.append(ALL_COUNTRIES[i % ALL_COUNTRIES.size()]);
+        items.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i).toDouble());
+        items.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i).toDouble());
+        items.append(100 + i);
+        items.append(i * 10 + 5);
+        items.append(i * 20 + 25);
+        rows.append(items);
     }
+
+    InfoDialog armiesInfo("Base", columns, rows, QList<Action>({Action(ActionType::ShowTroopers)}));
+    armiesInfo.exec();
+    Action selectedAction = armiesInfo.getSelectedAction();
+    return selectedAction;
+}
+
+
+Action Manager::execTroopersWindow()
+{
+    return ActionType::None;
+}
+
+
+Action Manager::execTrooperSkillsWindow()
+{
+    return ActionType::None;
 }

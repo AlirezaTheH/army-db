@@ -173,7 +173,7 @@ void InfoDialog::on_pushButton_delete_clicked()
 {
     if (ui->tableWidget_data->currentRow() == -1)
     {
-        MessageDialog::instance()->err("Please select an entry to delete!", this);
+        MessageDialog::instance()->err("Please select an entry!", this);
         return;
     }
 
@@ -187,6 +187,12 @@ void InfoDialog::on_pushButton_doAction_clicked()
         MessageDialog::instance()->err("There is no action!", this);
         return;
     }
+
+    /*if (ui->tableWidget_data->currentRow() == -1)
+    {
+        MessageDialog::instance()->err("Please select an entry!", this);
+        return;
+    }*/
 
     selectedAction = actions[ui->comboBox_actions->currentIndex()];
     close();

@@ -5,6 +5,7 @@ Action::Action(const ActionType &type):
 {
     names = QStringList({
         "",
+        "Show Battlefields",
         "Show Bases",
         "Show Armies",
         "Show Troopers",

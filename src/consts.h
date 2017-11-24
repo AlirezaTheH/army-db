@@ -17,5 +17,9 @@ const QString LIMIT_MAXIMUM = "LIMIT_MAXIMUM";
 const QString PATTERN = "PATTERN";
 const QString ENUM_ATTRS = "ENUM_ATTRS";
 
+const QStringList ALL_COUNTRIES({
+    "Iran",
+    "Iraq"
+});
 
 #endif // CONSTS_H

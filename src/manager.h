@@ -2,6 +2,7 @@
 #define MANAGER_H
 
 #include "item_factory.h"
+#include "action.h"
 
 
 class Manager
@@ -11,7 +12,15 @@ public:
     void exec();
 
 private:
+    Action execBattlefieldsWindow();
+    Action execBasesWindow();
+    Action execArmiesWindow();
+    Action execTroopersWindow();
+    Action execTrooperSkillsWindow();
+
+private:
     ItemFactory itemFactory;
+    QList<Action> actionsHistory;
 };
 
 #endif // MANAGER_H
