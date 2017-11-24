@@ -17,9 +17,22 @@ const QString LIMIT_MAXIMUM = "LIMIT_MAXIMUM";
 const QString PATTERN = "PATTERN";
 const QString ENUM_ATTRS = "ENUM_ATTRS";
 
-const QStringList ALL_COUNTRIES({
+const QStringList COUNTRIES({
     "Iran",
-    "Iraq"
+    "China",
+    "Japan",
+    "Russia"
+});
+
+const QStringList ARMY_FORCE_TYPES({
+    "Air Force",
+    "Land Force",
+    "Sea Force"
+});
+
+const QStringList ARMY_SIZE_TYPES({
+    "Army",
+    "Battalion"
 });
 
 #endif // CONSTS_H
