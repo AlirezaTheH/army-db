@@ -113,7 +113,6 @@ void FormDialog::on_pushButton_done_clicked()
                     QDateTime dt = QDateTime::fromString(text, Qt::ISODate);
                     if (dt.toSecsSinceEpoch() <= QDateTime::currentSecsSinceEpoch())
                     {
-                        qDebug() << dt.toSecsSinceEpoch() << QDateTime::currentSecsSinceEpoch();
                         error = "must be greater than now";
                         MessageDialog::instance()->err(QString("%1 %2!").arg(items[i]->name(), error), this);
                         return;
