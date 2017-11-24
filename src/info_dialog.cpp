@@ -11,13 +11,13 @@
 
 
 InfoDialog::InfoDialog(const QString &title, const QList<Item> &dataColumns,
-        const QList<QList<QVariant> > &dataRows, const QStringList actions, QWidget *parent) :
+        const QList<QList<QVariant> > &dataRows, const QList<Action> actions, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::InfoDialog),
     dataColumns(dataColumns),
     dataRows(dataRows),
     actions(actions),
-    selectedAction("")
+    selectedAction(ActionType::None)
 {
     ui->setupUi(this);
     setFixedSize(size());
@@ -43,7 +43,7 @@ InfoDialog::~InfoDialog()
     delete ui;
 }
 
-QString InfoDialog::getSelectedAction() const
+Action InfoDialog::getSelectedAction() const
 {
     return selectedAction;
 }
@@ -80,7 +80,8 @@ void InfoDialog::showData()
 
 void InfoDialog::showActions()
 {
-    ui->comboBox_actions->addItems(actions);
+    for (auto action : actions)
+        ui->comboBox_actions->addItem(action.name());
 }
 
 

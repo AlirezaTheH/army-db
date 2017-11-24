@@ -31,7 +31,8 @@ SOURCES += \
     form_dialog.cpp \
     manager.cpp \
     info_dialog.cpp \
-    item_factory.cpp
+    item_factory.cpp \
+    action.cpp
 
 HEADERS += \
     message_dialog.h \
@@ -44,7 +45,8 @@ HEADERS += \
     item.h \
     manager.h \
     info_dialog.h \
-    item_factory.h
+    item_factory.h \
+    action.h
 
 FORMS += \
     login_window.ui \

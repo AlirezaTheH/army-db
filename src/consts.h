@@ -17,10 +17,5 @@ const QString LIMIT_MAXIMUM = "LIMIT_MAXIMUM";
 const QString PATTERN = "PATTERN";
 const QString ENUM_ATTRS = "ENUM_ATTRS";
 
-const QString ACTION_SHOW_BASES = "Show Bases";
-const QString ACTION_SHOW_ARMIES = "Show Armies";
-const QString ACTION_SHOW_TROOPERS = "Show Troopers";
-const QString ACTION_SHOW_TROOPER_SKILLS = "Show Skills";
-
 
 #endif // CONSTS_H

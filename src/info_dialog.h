@@ -4,6 +4,7 @@
 #include <QDialog>
 
 #include "item.h"
+#include "action.h"
 
 
 namespace Ui {
@@ -16,10 +17,10 @@ class InfoDialog : public QDialog
 
 public:
     explicit InfoDialog(const QString &title, const QList<Item> &dataColumns,
-        const QList<QList<QVariant>> &dataRows, const QStringList actions, QWidget *parent = 0);
+        const QList<QList<QVariant>> &dataRows, const QList<Action> actions, QWidget *parent = 0);
     ~InfoDialog();
 
-    QString getSelectedAction() const;
+    Action getSelectedAction() const;
 
 private slots:
     void on_pushButton_create_clicked();
@@ -38,8 +39,8 @@ private:
     Ui::InfoDialog *ui;
     QList<Item> dataColumns;
     QList<QList<QVariant>> dataRows;
-    QStringList actions;
-    QString selectedAction;
+    QList<Action> actions;
+    Action selectedAction;
 };
 
 #endif // INFO_DIALOG_H
