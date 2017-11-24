@@ -67,6 +67,11 @@ void Manager::exec()
         rows.append(items);
     }
 
-    InfoDialog battleFieldInfo("BattleField", columns, rows);
+    InfoDialog battleFieldInfo("BattleField", columns, rows, QStringList({ACTION_SHOW_BASES}));
     battleFieldInfo.exec();
+    auto selectedAction = battleFieldInfo.getSelectedAction();
+    if (selectedAction != "")
+    {
+        qDebug() << selectedAction;
+    }
 }

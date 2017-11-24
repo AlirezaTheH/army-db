@@ -16,8 +16,10 @@ class InfoDialog : public QDialog
 
 public:
     explicit InfoDialog(const QString &title, const QList<Item> &dataColumns,
-        const QList<QList<QVariant>> &dataRows, QWidget *parent = 0);
+        const QList<QList<QVariant>> &dataRows, const QStringList actions, QWidget *parent = 0);
     ~InfoDialog();
+
+    QString getSelectedAction() const;
 
 private slots:
     void on_pushButton_create_clicked();
@@ -26,13 +28,18 @@ private slots:
 
     void on_pushButton_delete_clicked();
 
+    void on_pushButton_doAction_clicked();
+
 private:
     void showData();
+    void showActions();
 
 private:
     Ui::InfoDialog *ui;
     QList<Item> dataColumns;
     QList<QList<QVariant>> dataRows;
+    QStringList actions;
+    QString selectedAction;
 };
 
 #endif // INFO_DIALOG_H

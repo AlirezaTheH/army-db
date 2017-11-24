@@ -11,11 +11,13 @@
 
 
 InfoDialog::InfoDialog(const QString &title, const QList<Item> &dataColumns,
-        const QList<QList<QVariant> > &dataRows, QWidget *parent) :
+        const QList<QList<QVariant> > &dataRows, const QStringList actions, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::InfoDialog),
     dataColumns(dataColumns),
-    dataRows(dataRows)
+    dataRows(dataRows),
+    actions(actions),
+    selectedAction("")
 {
     ui->setupUi(this);
     setFixedSize(size());
@@ -33,11 +35,17 @@ InfoDialog::InfoDialog(const QString &title, const QList<Item> &dataColumns,
     }
 
     showData();
+    showActions();
 }
 
 InfoDialog::~InfoDialog()
 {
     delete ui;
+}
+
+QString InfoDialog::getSelectedAction() const
+{
+    return selectedAction;
 }
 
 
@@ -67,6 +75,12 @@ void InfoDialog::showData()
     ui->tableWidget_data->resizeRowsToContents();
     for (int i = 0; i < ui->tableWidget_data->columnCount(); i++)
         ui->tableWidget_data->setColumnWidth(i, ui->tableWidget_data->columnWidth(i) + 20);
+}
+
+
+void InfoDialog::showActions()
+{
+    ui->comboBox_actions->addItems(actions);
 }
 
 
@@ -163,4 +177,16 @@ void InfoDialog::on_pushButton_delete_clicked()
     }
 
     ui->tableWidget_data->removeRow(ui->tableWidget_data->currentRow());
+}
+
+void InfoDialog::on_pushButton_doAction_clicked()
+{
+    if (actions.size() == 0)
+    {
+        MessageDialog::instance()->err("There is no action!", this);
+        return;
+    }
+
+    selectedAction = actions[ui->comboBox_actions->currentIndex()];
+    close();
 }
