@@ -173,7 +173,7 @@ void InfoDialog::on_pushButton_delete_clicked()
 {
     if (ui->tableWidget_data->currentRow() == -1)
     {
-        MessageDialog::instance()->err("Please select an entry!", this);
+        MessageDialog::instance()->err("Please select an entry to delete!", this);
         return;
     }
 

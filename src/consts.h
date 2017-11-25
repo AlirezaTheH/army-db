@@ -28,4 +28,16 @@ const QStringList ARMY_SIZE_TYPES({
     "Battalion"
 });
 
+const QStringList TROOPER_TYPES({
+    "Commander",
+    "Soldier"
+});
+
+const QStringList TROOPER_SKILLS({
+    "RPG",
+    "Translator",
+    "Medic",
+    "Sniper"
+});
+
 #endif // CONSTS_H
