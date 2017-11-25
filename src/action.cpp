@@ -9,7 +9,9 @@ Action::Action(const ActionType &type):
         "Show Bases",
         "Show Armies",
         "Show Troopers",
-        "Show Trooper Skills"
+        "Show Trooper Skills",
+        "Show Fortifications",
+        "Show Vehicles"
     });
 }
 

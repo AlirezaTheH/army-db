@@ -42,6 +42,12 @@ void Manager::exec()
             case ActionType::ShowTrooperSkills:
                 action = execTrooperSkillsWindow();
                 break;
+            case ActionType::ShowFortifications:
+                action = execFortificationsWindow();
+                break;
+            case ActionType::ShowVehicles:
+                action = execVehiclesWindow();
+                break;
             default:
                 break;
         }
@@ -108,7 +114,7 @@ Action Manager::execBattlefieldsWindow()
         rows.append(items);
     }
 
-    InfoDialog battleFieldsInfo("BattleField", columns, rows, QList<Action>({Action(ActionType::ShowBases)}));
+    InfoDialog battleFieldsInfo("BattleField", columns, rows, QList<Action>({Action(ActionType::ShowBases), Action(ActionType::ShowFortifications)}));
     battleFieldsInfo.exec();
     Action selectedAction = battleFieldsInfo.getSelectedAction();
     return selectedAction;
@@ -182,7 +188,7 @@ Action Manager::execBasesWindow()
         rows.append(items);
     }
 
-    InfoDialog basesInfo("Base", columns, rows, QList<Action>({Action(ActionType::ShowArmies)}));
+    InfoDialog basesInfo("Base", columns, rows, QList<Action>({Action(ActionType::ShowArmies), Action(ActionType::ShowVehicles)}));
     basesInfo.exec();
     Action selectedAction = basesInfo.getSelectedAction();
     return selectedAction;
@@ -266,7 +272,7 @@ Action Manager::execArmiesWindow()
         rows.append(items);
     }
 
-    InfoDialog armiesInfo("Army", columns, rows, QList<Action>({Action(ActionType::ShowTroopers)}));
+    InfoDialog armiesInfo("Army", columns, rows, QList<Action>({Action(ActionType::ShowTroopers), Action(ActionType::ShowVehicles)}));
     armiesInfo.exec();
     Action selectedAction = armiesInfo.getSelectedAction();
     return selectedAction;
@@ -413,5 +419,175 @@ Action Manager::execTrooperSkillsWindow()
     InfoDialog trooperSkillsInfo("Trooper Skill", columns, rows, QList<Action>({}));
     trooperSkillsInfo.exec();
     Action selectedAction = trooperSkillsInfo.getSelectedAction();
+    return selectedAction;
+}
+
+
+Action Manager::execFortificationsWindow()
+{
+    QList<Item> columns;
+    QList<QList<QVariant>> rows;
+
+    // is natural
+    Item isNatural = itemFactory.createBoolean("is_natural", true);
+
+    // health
+    Item health = itemFactory.createReal("health", 100);
+    health.setProperty(LIMIT_MINIMUM, true);
+    health.setProperty(MINIMUM, 0);
+    health.setProperty(LIMIT_MAXIMUM, true);
+    health.setProperty(MAXIMUM, 100);
+
+    // armor
+    Item armor = itemFactory.createReal("armor", 100);
+    health.setProperty(LIMIT_MINIMUM, true);
+    health.setProperty(MINIMUM, 0);
+    health.setProperty(LIMIT_MAXIMUM, true);
+    health.setProperty(MAXIMUM, 100);
+
+
+    // type
+    Item type = itemFactory.createEnum("type", FORTIFICATION_TYPES, 0);
+
+    // position latitude
+    Item positionLatitude = itemFactory.createReal("position_latitude", 30);
+    positionLatitude.setProperty(LIMIT_MINIMUM, true);
+    positionLatitude.setProperty(MINIMUM, 25.2919f);
+    positionLatitude.setProperty(LIMIT_MAXIMUM, true);
+    positionLatitude.setProperty(MAXIMUM, 39.6482f);
+
+    // position longitude
+    Item positionLongitude = itemFactory.createReal("position_longitude", 50);
+    positionLongitude.setProperty(LIMIT_MINIMUM, true);
+    positionLongitude.setProperty(MINIMUM, 44.7653f);
+    positionLongitude.setProperty(LIMIT_MAXIMUM, true);
+    positionLongitude.setProperty(MAXIMUM, 61.4949f);
+
+
+    columns.append(isNatural);
+    columns.append(health);
+    columns.append(armor);
+    columns.append(type);
+    columns.append(positionLatitude);
+    columns.append(positionLongitude);
+
+    for (int i = 0; i < 10; i++)
+    {
+        QList<QVariant> items;
+        items.append(i % 2 == 1);
+        items.append(55 + i * 3);
+        items.append(55 + i * 3);
+        items.append(FORTIFICATION_TYPES[i % FORTIFICATION_TYPES.size()]);
+        items.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i).toDouble());
+        items.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i).toDouble());
+        rows.append(items);
+    }
+
+    InfoDialog fortificationsInfo("Fortification", columns, rows, QList<Action>({}));
+    fortificationsInfo.exec();
+    Action selectedAction = fortificationsInfo.getSelectedAction();
+    return selectedAction;
+}
+
+
+Action Manager::execVehiclesWindow()
+{
+    QList<Item> columns;
+    QList<QList<QVariant>> rows;
+
+    // health
+    Item health = itemFactory.createReal("health", 100);
+    health.setProperty(LIMIT_MINIMUM, true);
+    health.setProperty(MINIMUM, 0);
+    health.setProperty(LIMIT_MAXIMUM, true);
+    health.setProperty(MAXIMUM, 100);
+
+    // armor
+    Item armor = itemFactory.createReal("armor", 100);
+    health.setProperty(LIMIT_MINIMUM, true);
+    health.setProperty(MINIMUM, 0);
+    health.setProperty(LIMIT_MAXIMUM, true);
+    health.setProperty(MAXIMUM, 100);
+
+
+    // type
+    Item type = itemFactory.createEnum("type", VEHICLE_TYPES, 0);
+
+    // position latitude
+    Item positionLatitude = itemFactory.createReal("position_latitude", 30);
+    positionLatitude.setProperty(LIMIT_MINIMUM, true);
+    positionLatitude.setProperty(MINIMUM, 25.2919f);
+    positionLatitude.setProperty(LIMIT_MAXIMUM, true);
+    positionLatitude.setProperty(MAXIMUM, 39.6482f);
+
+    // position longitude
+    Item positionLongitude = itemFactory.createReal("position_longitude", 50);
+    positionLongitude.setProperty(LIMIT_MINIMUM, true);
+    positionLongitude.setProperty(MINIMUM, 44.7653f);
+    positionLongitude.setProperty(LIMIT_MAXIMUM, true);
+    positionLongitude.setProperty(MAXIMUM, 61.4949f);
+
+    // max speed
+    Item max_speed = itemFactory.createInteger("max_speed", 100);
+    health.setProperty(LIMIT_MINIMUM, true);
+    health.setProperty(MINIMUM, 80);
+    health.setProperty(LIMIT_MAXIMUM, true);
+    health.setProperty(MAXIMUM, 200);
+
+    // max acceleration
+    Item max_acceleration = itemFactory.createInteger("max_acceleration", 10);
+    health.setProperty(LIMIT_MINIMUM, true);
+    health.setProperty(MINIMUM, 5);
+    health.setProperty(LIMIT_MAXIMUM, true);
+    health.setProperty(MAXIMUM, 20);
+
+    // fuel type
+    Item fuel_type = itemFactory.createEnum("vehicle_type", VEHICLE_FUEL_TYPES, 0);
+
+    // fuel max capacity
+    Item fuel_max_capacity = itemFactory.createInteger("fuel_max_capacity", 50);
+    health.setProperty(LIMIT_MINIMUM, true);
+    health.setProperty(MINIMUM, 25);
+    health.setProperty(LIMIT_MAXIMUM, true);
+    health.setProperty(MAXIMUM, 100);
+
+    // max passengers
+    Item max_passengers = itemFactory.createInteger("max_passengers", 5);
+    health.setProperty(LIMIT_MINIMUM, true);
+    health.setProperty(MINIMUM, 1);
+    health.setProperty(LIMIT_MAXIMUM, true);
+    health.setProperty(MAXIMUM, 10);
+
+
+    columns.append(health);
+    columns.append(armor);
+    columns.append(type);
+    columns.append(positionLatitude);
+    columns.append(positionLongitude);
+    columns.append(max_speed);
+    columns.append(max_acceleration);
+    columns.append(fuel_type);
+    columns.append(fuel_max_capacity);
+    columns.append(max_passengers);
+
+    for (int i = 0; i < 10; i++)
+    {
+        QList<QVariant> items;
+        items.append(55 + i * 3);
+        items.append(55 + i * 3);
+        items.append(VEHICLE_TYPES[i % VEHICLE_TYPES.size()]);
+        items.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i).toDouble());
+        items.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i).toDouble());
+        items.append(80 + i * 7);
+        items.append(5 + i * 1);
+        items.append(VEHICLE_FUEL_TYPES[i % VEHICLE_FUEL_TYPES.size()]);
+        items.append(25 + i * 7);
+        items.append(1 + i * 1);
+        rows.append(items);
+    }
+
+    InfoDialog vehiclesInfo("Vehicle", columns, rows, QList<Action>({}));
+    vehiclesInfo.exec();
+    Action selectedAction = vehiclesInfo.getSelectedAction();
     return selectedAction;
 }

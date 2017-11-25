@@ -40,4 +40,20 @@ const QStringList TROOPER_SKILLS({
     "Sniper"
 });
 
+const QStringList FORTIFICATION_TYPES({
+    "Sea",
+    "Mountain"
+});
+
+const QStringList VEHICLE_TYPES({
+    "Jeep",
+    "Tank",
+    "Bulldozer",
+});
+
+const QStringList VEHICLE_FUEL_TYPES({
+    "Petrol",
+    "Gas"
+});
+
 #endif // CONSTS_H

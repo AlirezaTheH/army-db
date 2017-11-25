@@ -17,6 +17,8 @@ private:
     Action execArmiesWindow();
     Action execTroopersWindow();
     Action execTrooperSkillsWindow();
+    Action execFortificationsWindow();
+    Action execVehiclesWindow();
 
 private:
     ItemFactory itemFactory;
