@@ -14,6 +14,8 @@ enum class ActionType
     ShowTrooperSkills,
     ShowFortifications,
     ShowVehicles,
+    ShowAmmo,
+    ShowWeapons
 };
 
 

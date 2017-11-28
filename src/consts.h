@@ -56,4 +56,32 @@ const QStringList VEHICLE_FUEL_TYPES({
     "Gas"
 });
 
+const QStringList AMMO_TYPES({
+    "Bomb",
+    "Bullet",
+});
+
+const QStringList AMMO_SURFACE_MATERAIL({
+    "Aluminium",
+    "Titanium"
+});
+
+const QStringList AMMO_EXPLOSION_MATERIAL({
+    "Gunpowder",
+    "TNT",
+    "Ammonium Nitrate"
+});
+
+const QStringList WEAPON_TYPES({
+    "Colt",
+    "Sniper",
+    "RPG"
+});
+
+const QStringList WEAPON_MODELS({
+    "M1",
+    "T300",
+    "MP5"
+});
+
 #endif // CONSTS_H

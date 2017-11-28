@@ -48,6 +48,12 @@ void Manager::exec()
             case ActionType::ShowVehicles:
                 action = execVehiclesWindow();
                 break;
+            case ActionType::ShowAmmo:
+                action = execAmmoWindow();
+                break;
+            case ActionType::ShowWeapons:
+                action = execWeaponsWindow();
+                break;
             default:
                 break;
         }
@@ -272,7 +278,10 @@ Action Manager::execArmiesWindow()
         rows.append(items);
     }
 
-    InfoDialog armiesInfo("Army", columns, rows, QList<Action>({Action(ActionType::ShowTroopers), Action(ActionType::ShowVehicles)}));
+    InfoDialog armiesInfo("Army", columns, rows, QList<Action>({Action(ActionType::ShowTroopers),
+                                                                Action(ActionType::ShowVehicles),
+                                                                Action(ActionType::ShowAmmo),
+                                                                Action(ActionType::ShowWeapons)}));
     armiesInfo.exec();
     Action selectedAction = armiesInfo.getSelectedAction();
     return selectedAction;
@@ -589,5 +598,213 @@ Action Manager::execVehiclesWindow()
     InfoDialog vehiclesInfo("Vehicle", columns, rows, QList<Action>({}));
     vehiclesInfo.exec();
     Action selectedAction = vehiclesInfo.getSelectedAction();
+    return selectedAction;
+}
+
+
+Action Manager::execAmmoWindow()
+{
+    QList<Item> columns;
+    QList<QList<QVariant>> rows;
+
+    // name
+    Item name = itemFactory.createString("name", "Name_0");
+    name.setProperty(ALLOW_NULL, false);
+    name.setProperty(MINIMUM_LENGTH, -1);
+    name.setProperty(MAXIMUM_LENGTH, -1);
+    name.setProperty(PATTERN, "");
+
+    // type
+    Item type = itemFactory.createEnum("type", AMMO_TYPES, 0);
+
+    // surface material
+    Item surface_material = itemFactory.createEnum("surface_material", AMMO_SURFACE_MATERAIL, 0);
+
+    // explosion material
+    Item explosion_material = itemFactory.createEnum("explosion_material", AMMO_EXPLOSION_MATERIAL, 0);
+
+    // weight
+    Item weight = itemFactory.createReal("weight", .1);
+    weight.setProperty(LIMIT_MINIMUM, true);
+    weight.setProperty(MINIMUM, .1f);
+    weight.setProperty(LIMIT_MAXIMUM, true);
+    weight.setProperty(MAXIMUM, 200);
+
+    // count
+    Item count = itemFactory.createInteger("count", 10);
+    count.setProperty(LIMIT_MINIMUM, true);
+    count.setProperty(MINIMUM, 0);
+    count.setProperty(LIMIT_MAXIMUM, true);
+    count.setProperty(MAXIMUM, 1000000);
+
+    // width
+    Item width = itemFactory.createReal("width", .02);
+    width.setProperty(LIMIT_MINIMUM, true);
+    width.setProperty(MINIMUM, .01f);
+    width.setProperty(LIMIT_MAXIMUM, true);
+    width.setProperty(MAXIMUM, 1);
+
+    // length
+    Item length = itemFactory.createReal("length", .02);
+    length.setProperty(LIMIT_MINIMUM, true);
+    length.setProperty(MINIMUM, .01f);
+    length.setProperty(LIMIT_MAXIMUM, true);
+    length.setProperty(MAXIMUM, 1);
+
+    // height
+    Item height = itemFactory.createReal("height", .02);
+    height.setProperty(LIMIT_MINIMUM, true);
+    height.setProperty(MINIMUM, .01f);
+    height.setProperty(LIMIT_MAXIMUM, true);
+    height.setProperty(MAXIMUM, 10);
+
+
+    columns.append(name);
+    columns.append(type);
+    columns.append(surface_material);
+    columns.append(explosion_material);
+    columns.append(weight);
+    columns.append(count);
+    columns.append(width);
+    columns.append(length);
+    columns.append(height);
+
+    for (int i = 0; i < 10; i++)
+    {
+        QList<QVariant> items;
+        items.append("Ammo_Name_" + QString::number(i));
+        items.append(AMMO_TYPES[i % AMMO_TYPES.size()]);
+        items.append(AMMO_SURFACE_MATERAIL[i % AMMO_SURFACE_MATERAIL.size()]);
+        items.append(AMMO_EXPLOSION_MATERIAL[i % AMMO_EXPLOSION_MATERIAL.size()]);
+        items.append(.2 + i * 7);
+        items.append(17 + i * 1);
+        items.append(.1 + i * .1);
+        items.append(.1 + i * .1);
+        items.append(.1 + i);
+        rows.append(items);
+    }
+
+    InfoDialog ammoInfo("Ammo", columns, rows, QList<Action>({}));
+    ammoInfo.exec();
+    Action selectedAction = ammoInfo.getSelectedAction();
+    return selectedAction;
+}
+
+Action Manager::execWeaponsWindow()
+{
+    QList<Item> columns;
+    QList<QList<QVariant>> rows;
+
+    // name
+    Item name = itemFactory.createString("name", "Name_0");
+    name.setProperty(ALLOW_NULL, false);
+    name.setProperty(MINIMUM_LENGTH, -1);
+    name.setProperty(MAXIMUM_LENGTH, -1);
+    name.setProperty(PATTERN, "");
+
+    // type
+    Item type = itemFactory.createEnum("type", WEAPON_TYPES, 0);
+
+    // model
+    Item model = itemFactory.createEnum("type", WEAPON_MODELS, 0);
+
+    // weight
+    Item weight = itemFactory.createReal("weight", .1);
+    weight.setProperty(LIMIT_MINIMUM, true);
+    weight.setProperty(MINIMUM, .1f);
+    weight.setProperty(LIMIT_MAXIMUM, true);
+    weight.setProperty(MAXIMUM, 200);
+
+    // count
+    Item count = itemFactory.createInteger("count", 10);
+    count.setProperty(LIMIT_MINIMUM, true);
+    count.setProperty(MINIMUM, 0);
+    count.setProperty(LIMIT_MAXIMUM, true);
+    count.setProperty(MAXIMUM, 1000000);
+
+    // width
+    Item width = itemFactory.createReal("width", .02);
+    width.setProperty(LIMIT_MINIMUM, true);
+    width.setProperty(MINIMUM, .01f);
+    width.setProperty(LIMIT_MAXIMUM, true);
+    width.setProperty(MAXIMUM, 1);
+
+    // length
+    Item length = itemFactory.createReal("length", .02);
+    length.setProperty(LIMIT_MINIMUM, true);
+    length.setProperty(MINIMUM, .01f);
+    length.setProperty(LIMIT_MAXIMUM, true);
+    length.setProperty(MAXIMUM, 1);
+
+    // height
+    Item height = itemFactory.createReal("height", .02);
+    height.setProperty(LIMIT_MINIMUM, true);
+    height.setProperty(MINIMUM, .01f);
+    height.setProperty(LIMIT_MAXIMUM, true);
+    height.setProperty(MAXIMUM, 10);
+
+    // fire speed
+    Item fire_speed = itemFactory.createInteger("fire_speed", 300);
+    fire_speed.setProperty(LIMIT_MINIMUM, true);
+    fire_speed.setProperty(MINIMUM, 100);
+    fire_speed.setProperty(LIMIT_MAXIMUM, true);
+    fire_speed.setProperty(MAXIMUM, 1000);
+
+    // max range
+    Item max_range = itemFactory.createInteger("max_range", 1000);
+    max_range.setProperty(LIMIT_MINIMUM, true);
+    max_range.setProperty(MINIMUM, 500);
+    max_range.setProperty(LIMIT_MAXIMUM, true);
+    max_range.setProperty(MAXIMUM, 4000);
+
+    // average realod time
+    Item average_realod_time = itemFactory.createInteger("average_realod_time", 10);
+    average_realod_time.setProperty(LIMIT_MINIMUM, true);
+    average_realod_time.setProperty(MINIMUM, 3);
+    average_realod_time.setProperty(LIMIT_MAXIMUM, true);
+    average_realod_time.setProperty(MAXIMUM, 20);
+
+    // magazin size
+    Item magazin_size = itemFactory.createInteger("magazin_size", 16);
+    magazin_size.setProperty(LIMIT_MINIMUM, true);
+    magazin_size.setProperty(MINIMUM, 6);
+    magazin_size.setProperty(LIMIT_MAXIMUM, true);
+    magazin_size.setProperty(MAXIMUM, 100);
+
+
+    columns.append(name);
+    columns.append(type);
+    columns.append(model);
+    columns.append(weight);
+    columns.append(count);
+    columns.append(width);
+    columns.append(length);
+    columns.append(height);
+    columns.append(fire_speed);
+    columns.append(max_range);
+    columns.append(average_realod_time);
+    columns.append(magazin_size);
+
+    for (int i = 0; i < 10; i++)
+    {
+        QList<QVariant> items;
+        items.append("Ammo_Name_" + QString::number(i));
+        items.append(WEAPON_TYPES[i % WEAPON_TYPES.size()]);
+        items.append(WEAPON_MODELS[i % WEAPON_MODELS.size()]);
+        items.append(.2 + i * 7);
+        items.append(17 + i * 1);
+        items.append(.1 + i * .1);
+        items.append(.1 + i * .1);
+        items.append(.1 + i);
+        items.append(100 + i * 50);
+        items.append(500 + i * 120);
+        items.append(3 + i);
+        items.append(6 + i * 7);
+        rows.append(items);
+    }
+
+    InfoDialog weaponsInfo("Ammo", columns, rows, QList<Action>({}));
+    weaponsInfo.exec();
+    Action selectedAction = weaponsInfo.getSelectedAction();
     return selectedAction;
 }
