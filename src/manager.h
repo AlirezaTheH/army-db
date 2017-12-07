@@ -3,6 +3,7 @@
 
 #include "item_factory.h"
 #include "action.h"
+#include "db.h"
 
 
 class Manager

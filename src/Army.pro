@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui
+QT += sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -32,7 +33,9 @@ SOURCES += \
     manager.cpp \
     info_dialog.cpp \
     item_factory.cpp \
-    action.cpp
+    action.cpp \
+    db.cpp \
+    query_dialog.cpp
 
 HEADERS += \
     message_dialog.h \
@@ -46,12 +49,16 @@ HEADERS += \
     manager.h \
     info_dialog.h \
     item_factory.h \
-    action.h
+    action.h \
+    db.h \
+    query_dialog.h \
+    querydata.h
 
 FORMS += \
     login_window.ui \
     form_dialog.ui \
-    info_dialog.ui
+    info_dialog.ui \
+    query_dialog.ui
 
 SUBDIRS += \
     Army.pro
