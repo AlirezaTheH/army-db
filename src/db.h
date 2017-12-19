@@ -24,6 +24,7 @@ public:
 
 private:
     static DB *ins;
+    QSqlDatabase database;
 };
 
 #endif // DB_H

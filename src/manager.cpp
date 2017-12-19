@@ -177,12 +177,12 @@ Action Manager::execBasesWindow()
     vehicleCapacity.setProperty(LIMIT_MAXIMUM, true);
     vehicleCapacity.setProperty(MAXIMUM, 200);
 
-    // soldier capacity
-    Item soldierCapacity = itemFactory.createInteger("soldier_capacity", 200);
-    soldierCapacity.setProperty(LIMIT_MINIMUM, true);
-    soldierCapacity.setProperty(MINIMUM, 0);
-    soldierCapacity.setProperty(LIMIT_MAXIMUM, true);
-    soldierCapacity.setProperty(MAXIMUM, 500);
+    // trooper capacity
+    Item trooperCapacity = itemFactory.createInteger("trooper_capacity", 200);
+    trooperCapacity.setProperty(LIMIT_MINIMUM, true);
+    trooperCapacity.setProperty(MINIMUM, 0);
+    trooperCapacity.setProperty(LIMIT_MAXIMUM, true);
+    trooperCapacity.setProperty(MAXIMUM, 500);
 
 
     columns.append(name);
@@ -190,7 +190,7 @@ Action Manager::execBasesWindow()
     columns.append(positionLongitude);
     columns.append(radius);
     columns.append(vehicleCapacity);
-    columns.append(soldierCapacity);
+    columns.append(trooperCapacity);
 
     for (int i = 0; i < 10; i++)
     {
@@ -257,12 +257,12 @@ Action Manager::execArmiesWindow()
     vehicleCapacity.setProperty(LIMIT_MAXIMUM, true);
     vehicleCapacity.setProperty(MAXIMUM, 200);
 
-    // soldier capacity
-    Item soldierCapacity = itemFactory.createInteger("soldier_capacity", 200);
-    soldierCapacity.setProperty(LIMIT_MINIMUM, true);
-    soldierCapacity.setProperty(MINIMUM, 0);
-    soldierCapacity.setProperty(LIMIT_MAXIMUM, true);
-    soldierCapacity.setProperty(MAXIMUM, 500);
+    // trooper capacity
+    Item trooperCapacity = itemFactory.createInteger("trooper_capacity", 200);
+    trooperCapacity.setProperty(LIMIT_MINIMUM, true);
+    trooperCapacity.setProperty(MINIMUM, 0);
+    trooperCapacity.setProperty(LIMIT_MAXIMUM, true);
+    trooperCapacity.setProperty(MAXIMUM, 500);
 
 
     columns.append(name);
@@ -272,7 +272,7 @@ Action Manager::execArmiesWindow()
     columns.append(positionLongitude);
     columns.append(radius);
     columns.append(vehicleCapacity);
-    columns.append(soldierCapacity);
+    columns.append(trooperCapacity);
 
     for (int i = 0; i < 10; i++)
     {
@@ -459,11 +459,10 @@ Action Manager::execFortificationsWindow()
 
     // armor
     Item armor = itemFactory.createReal("armor", 100);
-    health.setProperty(LIMIT_MINIMUM, true);
-    health.setProperty(MINIMUM, 0);
-    health.setProperty(LIMIT_MAXIMUM, true);
-    health.setProperty(MAXIMUM, 100);
-
+    armor.setProperty(LIMIT_MINIMUM, true);
+    armor.setProperty(MINIMUM, 0);
+    armor.setProperty(LIMIT_MAXIMUM, true);
+    armor.setProperty(MAXIMUM, 100);
 
     // type
     Item type = itemFactory.createEnum("type", FORTIFICATION_TYPES, 0);
@@ -523,10 +522,10 @@ Action Manager::execVehiclesWindow()
 
     // armor
     Item armor = itemFactory.createReal("armor", 100);
-    health.setProperty(LIMIT_MINIMUM, true);
-    health.setProperty(MINIMUM, 0);
-    health.setProperty(LIMIT_MAXIMUM, true);
-    health.setProperty(MAXIMUM, 100);
+    armor.setProperty(LIMIT_MINIMUM, true);
+    armor.setProperty(MINIMUM, 0);
+    armor.setProperty(LIMIT_MAXIMUM, true);
+    armor.setProperty(MAXIMUM, 100);
 
 
     // type
@@ -548,34 +547,41 @@ Action Manager::execVehiclesWindow()
 
     // max speed
     Item max_speed = itemFactory.createInteger("max_speed", 100);
-    health.setProperty(LIMIT_MINIMUM, true);
-    health.setProperty(MINIMUM, 80);
-    health.setProperty(LIMIT_MAXIMUM, true);
-    health.setProperty(MAXIMUM, 200);
+    max_speed.setProperty(LIMIT_MINIMUM, true);
+    max_speed.setProperty(MINIMUM, 80);
+    max_speed.setProperty(LIMIT_MAXIMUM, true);
+    max_speed.setProperty(MAXIMUM, 200);
 
     // max acceleration
     Item max_acceleration = itemFactory.createInteger("max_acceleration", 10);
-    health.setProperty(LIMIT_MINIMUM, true);
-    health.setProperty(MINIMUM, 5);
-    health.setProperty(LIMIT_MAXIMUM, true);
-    health.setProperty(MAXIMUM, 20);
+    max_acceleration.setProperty(LIMIT_MINIMUM, true);
+    max_acceleration.setProperty(MINIMUM, 5);
+    max_acceleration.setProperty(LIMIT_MAXIMUM, true);
+    max_acceleration.setProperty(MAXIMUM, 20);
 
     // fuel type
-    Item fuel_type = itemFactory.createEnum("vehicle_type", VEHICLE_FUEL_TYPES, 0);
+    Item fuel_type = itemFactory.createEnum("fuel_type", VEHICLE_FUEL_TYPES, 0);
 
     // fuel max capacity
     Item fuel_max_capacity = itemFactory.createInteger("fuel_max_capacity", 50);
-    health.setProperty(LIMIT_MINIMUM, true);
-    health.setProperty(MINIMUM, 25);
-    health.setProperty(LIMIT_MAXIMUM, true);
-    health.setProperty(MAXIMUM, 100);
+    fuel_max_capacity.setProperty(LIMIT_MINIMUM, true);
+    fuel_max_capacity.setProperty(MINIMUM, 25);
+    fuel_max_capacity.setProperty(LIMIT_MAXIMUM, true);
+    fuel_max_capacity.setProperty(MAXIMUM, 100);
+
+    // fuel consuming unit
+    Item fuel_consuming_unit = itemFactory.createInteger("fuel_consuming_unit", 5);
+    fuel_consuming_unit.setProperty(LIMIT_MINIMUM, true);
+    fuel_consuming_unit.setProperty(MINIMUM, 3);
+    fuel_consuming_unit.setProperty(LIMIT_MAXIMUM, true);
+    fuel_consuming_unit.setProperty(MAXIMUM, 20);
 
     // max passengers
     Item max_passengers = itemFactory.createInteger("max_passengers", 5);
-    health.setProperty(LIMIT_MINIMUM, true);
-    health.setProperty(MINIMUM, 1);
-    health.setProperty(LIMIT_MAXIMUM, true);
-    health.setProperty(MAXIMUM, 10);
+    max_passengers.setProperty(LIMIT_MINIMUM, true);
+    max_passengers.setProperty(MINIMUM, 1);
+    max_passengers.setProperty(LIMIT_MAXIMUM, true);
+    max_passengers.setProperty(MAXIMUM, 10);
 
 
     columns.append(health);
@@ -587,6 +593,7 @@ Action Manager::execVehiclesWindow()
     columns.append(max_acceleration);
     columns.append(fuel_type);
     columns.append(fuel_max_capacity);
+    columns.append(fuel_consuming_unit);
     columns.append(max_passengers);
 
     for (int i = 0; i < 10; i++)
@@ -601,6 +608,7 @@ Action Manager::execVehiclesWindow()
         items.append(5 + i * 1);
         items.append(VEHICLE_FUEL_TYPES[i % VEHICLE_FUEL_TYPES.size()]);
         items.append(25 + i * 7);
+        items.append(5 + i);
         items.append(1 + i * 1);
         rows.append(items);
     }
@@ -700,6 +708,7 @@ Action Manager::execAmmoWindow()
     return selectedAction;
 }
 
+
 Action Manager::execWeaponsWindow()
 {
     QList<Item> columns;
@@ -754,32 +763,32 @@ Action Manager::execWeaponsWindow()
     height.setProperty(MAXIMUM, 10);
 
     // fire speed
-    Item fire_speed = itemFactory.createInteger("fire_speed", 300);
+    Item fire_speed = itemFactory.createInteger("fire_speed", 5);
     fire_speed.setProperty(LIMIT_MINIMUM, true);
-    fire_speed.setProperty(MINIMUM, 100);
+    fire_speed.setProperty(MINIMUM, 1);
     fire_speed.setProperty(LIMIT_MAXIMUM, true);
-    fire_speed.setProperty(MAXIMUM, 1000);
+    fire_speed.setProperty(MAXIMUM, 50);
 
     // max range
-    Item max_range = itemFactory.createInteger("max_range", 1000);
+    Item max_range = itemFactory.createReal("max_range", 1000);
     max_range.setProperty(LIMIT_MINIMUM, true);
     max_range.setProperty(MINIMUM, 500);
     max_range.setProperty(LIMIT_MAXIMUM, true);
     max_range.setProperty(MAXIMUM, 4000);
 
     // average realod time
-    Item average_realod_time = itemFactory.createInteger("average_realod_time", 10);
+    Item average_realod_time = itemFactory.createReal("average_realod_time", 10);
     average_realod_time.setProperty(LIMIT_MINIMUM, true);
     average_realod_time.setProperty(MINIMUM, 3);
     average_realod_time.setProperty(LIMIT_MAXIMUM, true);
     average_realod_time.setProperty(MAXIMUM, 20);
 
-    // magazin size
-    Item magazin_size = itemFactory.createInteger("magazin_size", 16);
-    magazin_size.setProperty(LIMIT_MINIMUM, true);
-    magazin_size.setProperty(MINIMUM, 6);
-    magazin_size.setProperty(LIMIT_MAXIMUM, true);
-    magazin_size.setProperty(MAXIMUM, 100);
+    // magazine size
+    Item magazine_size = itemFactory.createInteger("magazine_size", 16);
+    magazine_size.setProperty(LIMIT_MINIMUM, true);
+    magazine_size.setProperty(MINIMUM, 6);
+    magazine_size.setProperty(LIMIT_MAXIMUM, true);
+    magazine_size.setProperty(MAXIMUM, 100);
 
 
     columns.append(name);
@@ -793,12 +802,12 @@ Action Manager::execWeaponsWindow()
     columns.append(fire_speed);
     columns.append(max_range);
     columns.append(average_realod_time);
-    columns.append(magazin_size);
+    columns.append(magazine_size);
 
     for (int i = 0; i < 10; i++)
     {
         QList<QVariant> items;
-        items.append("Ammo_Name_" + QString::number(i));
+        items.append("Weapon_Name_" + QString::number(i));
         items.append(WEAPON_TYPES[i % WEAPON_TYPES.size()]);
         items.append(WEAPON_MODELS[i % WEAPON_MODELS.size()]);
         items.append(.2 + i * 7);
@@ -806,7 +815,7 @@ Action Manager::execWeaponsWindow()
         items.append(.1 + i * .1);
         items.append(.1 + i * .1);
         items.append(.1 + i);
-        items.append(100 + i * 50);
+        items.append(i);
         items.append(500 + i * 120);
         items.append(3 + i);
         items.append(6 + i * 7);
