@@ -2,13 +2,16 @@
 
 #include <QFile>
 
+#include "consts.h"
+
 DB *DB::ins = new DB();
 
 
 DB::DB()
 {
     init();
-    createAllTables();
+    createAllEntityTables();
+    createAllRelationTables();
     seed();
 }
 
@@ -28,7 +31,7 @@ void DB::init()
     database.open();
 }
 
-void DB::createAllTables()
+void DB::createAllEntityTables()
 {
     // create battlefields
     query(
@@ -53,7 +56,7 @@ void DB::createAllTables()
         "radius double not null, "
         "health double not null, "
         "armor double not null, "
-        "battlefield_fk integer, "
+        "battlefield_fk integer not null, "
         "foreign key (battlefield_fk) references battlefields(id)"
         ")"
     );
@@ -68,7 +71,7 @@ void DB::createAllTables()
         "radius double not null, "
         "vehicle_capacity integer not null, "
         "trooper_capacity integer not null, "
-        "battlefield_fk integer, "
+        "battlefield_fk integer not null, "
         "foreign key (battlefield_fk) references battlefields(id)"
         ")"
     );
@@ -95,13 +98,18 @@ void DB::createAllTables()
     query(
         "create table if not exists armies ("
         "id integer primary key autoincrement not null, "
+        "name varchar(128) not null, "
         "force_type integer not null, "
         "size_type integer not null, "
         "position_latitude double not null, "
         "position_longitude double not null, "
         "radius double not null, "
         "vehicle_capacity integer not null, "
-        "trooper_capacity integer not null"
+        "trooper_capacity integer not null, "
+        "base_fk integer not null, "
+        "commander_fk integer not null, "
+        "foreign key (base_fk) references bases(id), "
+        "foreign key (commander_fk) references troopers(id)"
         ")"
     );
 
@@ -109,14 +117,14 @@ void DB::createAllTables()
     query(
         "create table if not exists troopers ("
         "id integer primary key autoincrement not null, "
-        "last_name varchar(128) not null, "
         "first_name varchar(128) not null, "
+        "last_name varchar(128) not null, "
         "type integer not null, "
         "position_latitude double not null, "
         "position_longitude double not null, "
-        "health double not null, "
-        "grade integer not null, "
         "birth_datetime datetime not null, "
+        "grade integer not null, "
+        "health double not null, "
         "weight double not null, "
         "height double not null, "
         "is_single boolean not null, "
@@ -128,7 +136,7 @@ void DB::createAllTables()
     query(
         "create table if not exists trooper_skills ("
         "skill integer not null, "
-        "trooper_fk integer, "
+        "trooper_fk integer not null, "
         "foreign key (trooper_fk) references troopers(id), "
         "primary key (skill, trooper_fk)"
         ")"
@@ -180,6 +188,88 @@ void DB::createAllTables()
     );
 }
 
+
+void DB::createAllRelationTables()
+{
+    // create base has vehicle
+    query(
+        "create table if not exists base_has_vehicle ("
+        "base_fk integer not null, "
+        "vehicle_fk integer not null, "
+        "foreign key (base_fk) references bases(id), "
+        "foreign key (vehicle_fk) references vehicles(id), "
+        "primary key (base_fk, vehicle_fk)"
+        ")"
+    );
+
+    // create base has suit
+    query(
+        "create table if not exists base_has_suit ("
+        "base_fk integer not null, "
+        "suit_fk integer not null, "
+        "foreign key (base_fk) references bases(id), "
+        "foreign key (suit_fk) references suits(id), "
+        "primary key (base_fk, suit_fk)"
+        ")"
+    );
+
+    // create army has vehicle
+    query(
+        "create table if not exists army_has_vehicle ("
+        "army_fk integer not null, "
+        "vehicle_fk integer not null, "
+        "foreign key (army_fk) references armies(id), "
+        "foreign key (vehicle_fk) references vehicles(id), "
+        "primary key (army_fk, vehicle_fk)"
+        ")"
+    );
+
+    // create army has weapon
+    query(
+        "create table if not exists army_has_weapon ("
+        "army_fk integer not null, "
+        "weapon_fk integer not null, "
+        "foreign key (army_fk) references armies(id), "
+        "foreign key (weapon_fk) references weapons(id), "
+        "primary key (army_fk, weapon_fk)"
+        ")"
+    );
+
+    // create army has ammo
+    query(
+        "create table if not exists army_has_ammo ("
+        "army_fk integer not null, "
+        "ammo_fk integer not null, "
+        "foreign key (army_fk) references armies(id), "
+        "foreign key (ammo_fk) references ammo(id), "
+        "primary key (army_fk, ammo_fk)"
+        ")"
+    );
+
+    // create suit belongs to trooper
+    query(
+        "create table if not exists suit_belongsto_trooper ("
+        "suit_fk integer not null, "
+        "trooper_fk integer not null, "
+        "foreign key (suit_fk) references suits(id), "
+        "foreign key (trooper_fk) references troopers(id), "
+        "primary key (suit_fk, trooper_fk)"
+        ")"
+    );
+
+    // weapon can use ammo
+    query(
+        "create table if not exists weapon_canuse_ammo ("
+        "weapon_fk integer not null, "
+        "ammo_fk integer not null, "
+        "foreign key (weapon_fk) references weapons(id), "
+        "foreign key (ammo_fk) references ammo(id), "
+        "primary key (weapon_fk, ammo_fk)"
+        ")"
+    );
+}
+
+
 void DB::seed()
 {
     // battlefield
@@ -208,6 +298,44 @@ void DB::seed()
         values.append(QString::number(i * 20 + 25));
         values.append(QString::number(qrand() % 10 + 1));
         query_insert("bases", values);
+    }
+
+    // trooper
+    for (int i = 0; i < 10; i++)
+    {
+        QStringList values;
+        values.append(QString::number(i + 1));
+        values.append("Trooper_FName_" + QString::number(i));
+        values.append("Trooper_LName_" + QString::number(i));
+        values.append(TROOPER_TYPES[i % TROOPER_TYPES.size()]);
+        values.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i));
+        values.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i));
+        values.append(QString("2018-04-11 19:0%1").arg(i));
+        values.append(QString::number(i * 2 + 5));
+        values.append(QString::number(55 + i * 3));
+        values.append(QString::number(80 + i * 2));
+        values.append(QString::number(1.6 + ((float) i / 30.0)));
+        values.append(QString::number(i % 2 == 1));
+        values.append(QString::number(i / 2));
+        query_insert("troopers", values);
+    }
+
+    // army
+    for (int i = 0; i < 10; i++)
+    {
+        QStringList values;
+        values.append(QString::number(i + 1));
+        values.append("Army_" + QString::number(i));
+        values.append(ARMY_FORCE_TYPES[i % ARMY_FORCE_TYPES.size()]);
+        values.append(ARMY_SIZE_TYPES[i % ARMY_SIZE_TYPES.size()]);
+        values.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i));
+        values.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i));
+        values.append(QString::number(100 + i));
+        values.append(QString::number(i * 10 + 5));
+        values.append(QString::number(i * 20 + 25));
+        values.append(QString::number(qrand() % 10 + 1));
+        values.append(QString::number(qrand() % 10 + 1));
+        query_insert("armies", values);
     }
 }
 

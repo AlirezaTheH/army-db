@@ -15,7 +15,8 @@ private:
     DB();
 
     void init();
-    void createAllTables();
+    void createAllEntityTables();
+    void createAllRelationTables();
     void seed();
 
 public:
