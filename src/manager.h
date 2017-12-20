@@ -27,6 +27,7 @@ private:
 private:
     ItemFactory itemFactory;
     QList<Action> actionsHistory;
+    Action currentAction;
 };
 
 #endif // MANAGER_H

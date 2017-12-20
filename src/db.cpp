@@ -49,13 +49,13 @@ void DB::createAllEntityTables()
     query(
         "create table if not exists fortifications ("
         "id integer primary key autoincrement not null, "
-        "type integer not null, "
         "is_natural boolean not null, "
+        "health double not null, "
+        "armor double not null, "
+        "type integer not null, "
         "position_latitude double not null, "
         "position_longitude double not null, "
         "radius double not null, "
-        "health double not null, "
-        "armor double not null, "
         "battlefield_fk integer not null, "
         "foreign key (battlefield_fk) references battlefields(id)"
         ")"
@@ -285,6 +285,22 @@ void DB::seed()
         query_insert("battlefields", values);
     }
 
+    // fortification
+    for (int i = 0; i < 10; i++)
+    {
+        QStringList values;
+        values.append(QString::number(i + 1));
+        values.append(QString::number(i % 2 == 1));
+        values.append(QString::number(55 + i * 3));
+        values.append(QString::number(55 + i * 3));
+        values.append(QString::number(i % FORTIFICATION_TYPES.size()));
+        values.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i));
+        values.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i));
+        values.append(QString::number(100 + i));
+        values.append(QString::number(qrand() % 10 + 1));
+        query_insert("fortifications", values);
+    }
+
     // base
     for (int i = 0; i < 10; i++)
     {
@@ -307,7 +323,7 @@ void DB::seed()
         values.append(QString::number(i + 1));
         values.append("Trooper_FName_" + QString::number(i));
         values.append("Trooper_LName_" + QString::number(i));
-        values.append(TROOPER_TYPES[i % TROOPER_TYPES.size()]);
+        values.append(QString::number(i % TROOPER_TYPES.size()));
         values.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i));
         values.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i));
         values.append(QString("2018-04-11 19:0%1").arg(i));
@@ -326,8 +342,8 @@ void DB::seed()
         QStringList values;
         values.append(QString::number(i + 1));
         values.append("Army_" + QString::number(i));
-        values.append(ARMY_FORCE_TYPES[i % ARMY_FORCE_TYPES.size()]);
-        values.append(ARMY_SIZE_TYPES[i % ARMY_SIZE_TYPES.size()]);
+        values.append(QString::number(i % ARMY_FORCE_TYPES.size()));
+        values.append(QString::number(i % ARMY_SIZE_TYPES.size()));
         values.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i));
         values.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i));
         values.append(QString::number(100 + i));

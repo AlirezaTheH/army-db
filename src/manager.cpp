@@ -29,6 +29,7 @@ void Manager::exec()
     while (!actionsHistory.empty())
     {
         action = actionsHistory.back();
+        currentAction = action;
         if (action.type() == ActionType::None)
         {
             actionsHistory.pop_back();
@@ -79,7 +80,6 @@ void Manager::exec()
 Action Manager::execBattlefieldsWindow()
 {
     QList<Item> columns;
-    QList<QList<QVariant>> rows;
 
     // position latitude
     Item positionLatitude = itemFactory.createReal("position_latitude", 30);
@@ -122,18 +122,27 @@ Action Manager::execBattlefieldsWindow()
     columns.append(startDatetime);
     columns.append(endDatetime);
 
-    for (int i = 0; i < 10; i++)
-    {
-        QList<QVariant> items;
-        items.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i).toDouble());
-        items.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i).toDouble());
-        items.append(100 + i);
-        items.append(QString("2018-04-11 19:0%1").arg(i));
-        items.append(QString("2018-09-13 19:0%1").arg(i));
-        rows.append(items);
-    }
+    QString viewQuery = ""
+        "select id, position_latitude, position_longitude, radius, start_datetime, end_datetime "
+        "from battlefields"
+        "";
 
-    InfoDialog battleFieldsInfo("BattleField", columns, rows, QList<Action>({Action(ActionType::ShowBases), Action(ActionType::ShowFortifications)}));
+    QString insertQuery = ""
+        "insert into battlefields "
+        "(id, position_latitude, position_longitude, radius, start_datetime, end_datetime) "
+        "values(NULL, %1)"
+        "";
+
+    QString updateQuery = ""
+        "replace into battlefields "
+        "(id, position_latitude, position_longitude, radius, start_datetime, end_datetime) "
+        "values(%1, %2)"
+        "";
+
+    QString deleteQuery = "delete from battlefields where id=%1";
+
+    InfoDialog battleFieldsInfo("BattleField", columns, viewQuery, insertQuery, updateQuery, deleteQuery,
+        QList<Action>({Action(ActionType::ShowBases), Action(ActionType::ShowFortifications)}));
     battleFieldsInfo.exec();
     Action selectedAction = battleFieldsInfo.getSelectedAction();
     return selectedAction;
@@ -143,7 +152,6 @@ Action Manager::execBattlefieldsWindow()
 Action Manager::execBasesWindow()
 {
     QList<Item> columns;
-    QList<QList<QVariant>> rows;
 
     // name
     Item name = itemFactory.createString("name", "Base_0");
@@ -195,19 +203,29 @@ Action Manager::execBasesWindow()
     columns.append(vehicleCapacity);
     columns.append(trooperCapacity);
 
-    for (int i = 0; i < 10; i++)
-    {
-        QList<QVariant> items;
-        items.append("Base_" + QString::number(i));
-        items.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i).toDouble());
-        items.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i).toDouble());
-        items.append(100 + i);
-        items.append(i * 10 + 5);
-        items.append(i * 20 + 25);
-        rows.append(items);
-    }
+    QString viewQuery = QString(""
+        "select id, name, position_latitude, position_longitude, radius, vehicle_capacity, trooper_capacity "
+        "from bases "
+        "where battlefield_fk=%1"
+        "").arg(currentAction.id());
 
-    InfoDialog basesInfo("Base", columns, rows, QList<Action>({Action(ActionType::ShowArmies), Action(ActionType::ShowVehicles), Action(ActionType::ShowSuits)}));
+
+    QString insertQuery = QString(""
+        "insert into bases "
+        "(id, name, position_latitude, position_longitude, radius, vehicle_capacity, trooper_capacity, battlefield_fk) "
+        "values(NULL, %1, %2)"
+        "").arg("%1", currentAction.id());
+
+    QString updateQuery = QString(""
+        "replace into bases "
+        "(id, name, position_latitude, position_longitude, radius, vehicle_capacity, trooper_capacity, battlefield_fk) "
+        "values(%1, %2, %3)"
+        "").arg("%1", "%2", currentAction.id());
+
+    QString deleteQuery = "delete from bases where id=%1";
+
+    InfoDialog basesInfo("Base", columns, viewQuery, insertQuery, updateQuery, deleteQuery,
+        QList<Action>({Action(ActionType::ShowArmies), Action(ActionType::ShowVehicles), Action(ActionType::ShowSuits)}));
     basesInfo.exec();
     Action selectedAction = basesInfo.getSelectedAction();
     return selectedAction;
@@ -448,7 +466,6 @@ Action Manager::execTrooperSkillsWindow()
 Action Manager::execFortificationsWindow()
 {
     QList<Item> columns;
-    QList<QList<QVariant>> rows;
 
     // is natural
     Item isNatural = itemFactory.createBoolean("is_natural", true);
@@ -484,6 +501,13 @@ Action Manager::execFortificationsWindow()
     positionLongitude.setProperty(LIMIT_MAXIMUM, true);
     positionLongitude.setProperty(MAXIMUM, 61.4949f);
 
+    // radius
+    Item radius = itemFactory.createReal("radius", 1000);
+    radius.setProperty(LIMIT_MINIMUM, true);
+    radius.setProperty(MINIMUM, 100);
+    radius.setProperty(LIMIT_MAXIMUM, true);
+    radius.setProperty(MAXIMUM, 20000);
+
 
     columns.append(isNatural);
     columns.append(health);
@@ -491,20 +515,30 @@ Action Manager::execFortificationsWindow()
     columns.append(type);
     columns.append(positionLatitude);
     columns.append(positionLongitude);
+    columns.append(radius);
 
-    for (int i = 0; i < 10; i++)
-    {
-        QList<QVariant> items;
-        items.append(i % 2 == 1);
-        items.append(55 + i * 3);
-        items.append(55 + i * 3);
-        items.append(FORTIFICATION_TYPES[i % FORTIFICATION_TYPES.size()]);
-        items.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i).toDouble());
-        items.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i).toDouble());
-        rows.append(items);
-    }
+    QString viewQuery = QString(""
+        "select id, is_natural, health, armor, type, position_latitude, position_longitude, radius "
+        "from fortifications "
+        "where battlefield_fk=%1"
+        "").arg(currentAction.id());
 
-    InfoDialog fortificationsInfo("Fortification", columns, rows, QList<Action>({}));
+    QString insertQuery = QString(""
+        "insert into fortifications "
+        "(id, is_natural, health, armor, type, position_latitude, position_longitude, radius, battlefield_fk) "
+        "values(NULL, %1, %2)"
+        "").arg("%1", currentAction.id());
+
+    QString updateQuery = QString(""
+        "replace into fortifications "
+        "(id, is_natural, health, armor, type, position_latitude, position_longitude, radius, battlefield_fk) "
+        "values(%1, %2, %3)"
+        "").arg("%1", "%2", currentAction.id());
+
+    QString deleteQuery = "delete from fortifications where id=%1";
+
+    InfoDialog fortificationsInfo("Fortification", columns, viewQuery, insertQuery, updateQuery, deleteQuery,
+        QList<Action>({}));
     fortificationsInfo.exec();
     Action selectedAction = fortificationsInfo.getSelectedAction();
     return selectedAction;

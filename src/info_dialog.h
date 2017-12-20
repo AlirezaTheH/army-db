@@ -16,8 +16,11 @@ class InfoDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit InfoDialog(const QString &title, const QList<Item> &dataColumns,
+    InfoDialog(const QString &title, const QList<Item> &dataColumns,
         const QList<QList<QVariant>> &dataRows, const QList<Action> actions, QWidget *parent = 0);
+    InfoDialog(const QString &title, const QList<Item> &dataColumns,
+        const QString &viewQuery, const QString &insertQuery, const QString &updateQuery, const QString &deleteQuery,
+        const QList<Action> actions, QWidget *parent = 0);
     ~InfoDialog();
 
     Action getSelectedAction() const;
@@ -39,8 +42,13 @@ private:
     Ui::InfoDialog *ui;
     QList<Item> dataColumns;
     QList<QList<QVariant>> dataRows;
+    QString viewQuery;
+    QString insertQuery;
+    QString updateQuery;
+    QString deleteQuery;
     QList<Action> actions;
     Action selectedAction;
+    QList<QVariant> rowIds;
 };
 
 #endif // INFO_DIALOG_H

@@ -28,9 +28,13 @@ public:
     ActionType type() const;
     QString name() const;
 
+    void setId(const QString &id);
+    QString id() const;
+
 private:
     ActionType _type;
     QStringList names;
+    QString _id;
 };
 
 

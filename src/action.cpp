@@ -27,3 +27,13 @@ QString Action::name() const
 {
     return names[(int) type()];
 }
+
+void Action::setId(const QString &id)
+{
+    _id = id;
+}
+
+QString Action::id() const
+{
+    return _id;
+}
