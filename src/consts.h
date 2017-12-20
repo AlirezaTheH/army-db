@@ -84,4 +84,11 @@ const QStringList WEAPON_MODELS({
     "MP5"
 });
 
+const QStringList SUIT_TYPES({
+    "Swim",
+    "Pilot",
+    "Combat"
+});
+
+
 #endif // CONSTS_H

@@ -13,7 +13,8 @@ Action::Action(const ActionType &type):
         "Show Fortifications",
         "Show Vehicles",
         "Show Ammo",
-        "Show Weapons"
+        "Show Weapons",
+        "Show Suits"
     });
 }
 

@@ -168,6 +168,16 @@ void DB::createAllTables()
         ")"
     );
 
+    // create suits
+    query(
+        "create table if not exists suits ("
+        "id integer primary key autoincrement not null, "
+        "type integer not null, "
+        "size integer not null, "
+        "armor double not null, "
+        "in_use boolean not null"
+        ")"
+    );
 }
 
 void DB::seed()

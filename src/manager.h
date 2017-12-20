@@ -22,6 +22,7 @@ private:
     Action execVehiclesWindow();
     Action execAmmoWindow();
     Action execWeaponsWindow();
+    Action execSuitsWindow();
 
 private:
     ItemFactory itemFactory;

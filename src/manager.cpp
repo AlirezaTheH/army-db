@@ -64,6 +64,9 @@ void Manager::exec()
             case ActionType::ShowWeapons:
                 action = execWeaponsWindow();
                 break;
+            case ActionType::ShowSuits:
+                action = execSuitsWindow();
+                break;
             default:
                 break;
         }
@@ -204,7 +207,7 @@ Action Manager::execBasesWindow()
         rows.append(items);
     }
 
-    InfoDialog basesInfo("Base", columns, rows, QList<Action>({Action(ActionType::ShowArmies), Action(ActionType::ShowVehicles)}));
+    InfoDialog basesInfo("Base", columns, rows, QList<Action>({Action(ActionType::ShowArmies), Action(ActionType::ShowVehicles), Action(ActionType::ShowSuits)}));
     basesInfo.exec();
     Action selectedAction = basesInfo.getSelectedAction();
     return selectedAction;
@@ -825,5 +828,52 @@ Action Manager::execWeaponsWindow()
     InfoDialog weaponsInfo("Ammo", columns, rows, QList<Action>({}));
     weaponsInfo.exec();
     Action selectedAction = weaponsInfo.getSelectedAction();
+    return selectedAction;
+}
+
+Action Manager::execSuitsWindow()
+{
+    QList<Item> columns;
+    QList<QList<QVariant>> rows;
+
+    // type
+    Item type = itemFactory.createEnum("type", SUIT_TYPES, 0);
+
+    // size
+    Item size = itemFactory.createInteger("size", 5);
+    size.setProperty(LIMIT_MINIMUM, true);
+    size.setProperty(MINIMUM, 0);
+    size.setProperty(LIMIT_MAXIMUM, true);
+    size.setProperty(MAXIMUM, 10);
+
+    // armor
+    Item armor = itemFactory.createReal("armor", 100);
+    armor.setProperty(LIMIT_MINIMUM, true);
+    armor.setProperty(MINIMUM, 0);
+    armor.setProperty(LIMIT_MAXIMUM, true);
+    armor.setProperty(MAXIMUM, 100);
+
+    // in use
+    Item inUse = itemFactory.createBoolean("in_use", true);
+
+
+    columns.append(type);
+    columns.append(size);
+    columns.append(armor);
+    columns.append(inUse);
+
+    for (int i = 0; i < 10; i++)
+    {
+        QList<QVariant> items;
+        items.append(SUIT_TYPES[i % SUIT_TYPES.size()]);
+        items.append(i);
+        items.append(50 + i * 3);
+        items.append(i % 2 == 1);
+        rows.append(items);
+    }
+
+    InfoDialog suitInfo("Suit", columns, rows, QList<Action>({}));
+    suitInfo.exec();
+    Action selectedAction = suitInfo.getSelectedAction();
     return selectedAction;
 }
