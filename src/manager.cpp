@@ -336,7 +336,6 @@ Action Manager::execArmiesWindow()
 Action Manager::execTroopersWindow()
 {
     QList<Item> columns;
-    QList<QList<QVariant>> rows;
 
     // first name
     Item firstName = itemFactory.createString("first_name", "FirstName_0");
@@ -428,25 +427,32 @@ Action Manager::execTroopersWindow()
     columns.append(isSingle);
     columns.append(childrenCount);
 
-    for (int i = 0; i < 10; i++)
-    {
-        QList<QVariant> items;
-        items.append("Trooper_FName_" + QString::number(i));
-        items.append("Trooper_LName_" + QString::number(i));
-        items.append(TROOPER_TYPES[i % TROOPER_TYPES.size()]);
-        items.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i).toDouble());
-        items.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i).toDouble());
-        items.append(QString("2018-04-11 19:0%1").arg(i));
-        items.append(i * 2 + 5);
-        items.append(55 + i * 3);
-        items.append(80 + i * 2);
-        items.append(1.6 + ((float) i / 30.0));
-        items.append(i % 2 == 1);
-        items.append(i / 2);
-        rows.append(items);
-    }
+    QString viewQuery = QString(""
+        "select id, first_name, last_name, type, position_latitude, position_longitude, birth_datetime, grade, health, weight, height, is_single, children_count "
+        "from troopers, army_has_trooper "
+        "where id=army_has_trooper.trooper_fk and army_has_trooper.army_fk=%1"
+        "").arg(currentAction.id());
 
-    InfoDialog troopersInfo("Trooper", columns, rows, QList<Action>({Action(ActionType::ShowTrooperSkills)}));
+    QString insertQuery = QString(""
+        "insert into troopers "
+        "(id, first_name, last_name, type, position_latitude, position_longitude, birth_datetime, grade, health, weight, height, is_single, children_count) "
+        "values(NULL, %1)"
+        ";"
+        "insert into army_has_trooper "
+        "(army_fk, trooper_fk)"
+        "values(%2, (select max(id) from troopers))"
+        "").arg("%1", currentAction.id());
+
+    QString updateQuery = QString(""
+        "replace into troopers "
+        "(id, first_name, last_name, type, position_latitude, position_longitude, birth_datetime, grade, health, weight, height, is_single, children_count) "
+        "values(%1, %2, %3)"
+        "").arg("%1", "%2", currentAction.id());
+
+    QString deleteQuery = "delete from troopers where id=%1";
+
+    InfoDialog troopersInfo("Trooper", columns, viewQuery, insertQuery, updateQuery, deleteQuery,
+                            QList<Action>({Action(ActionType::ShowTrooperSkills)}));
     troopersInfo.exec();
     Action selectedAction = troopersInfo.getSelectedAction();
     return selectedAction;

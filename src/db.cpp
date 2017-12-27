@@ -10,9 +10,12 @@ DB *DB::ins = new DB();
 DB::DB()
 {
     init();
-    createAllEntityTables();
-    createAllRelationTables();
-    seed();
+    if (DROP_DATABASE)
+    {
+        createAllEntityTables();
+        createAllRelationTables();
+        seed();
+    }
 }
 
 DB *DB::instance()
@@ -24,8 +27,11 @@ DB *DB::instance()
 void DB::init()
 {
     QString path = "army.sqlite";
-    QFile dbfile(path);
-    dbfile.remove();
+    if (DROP_DATABASE)
+    {
+        QFile dbfile(path);
+        dbfile.remove();
+    }
     database = QSqlDatabase::addDatabase("QSQLITE");
     database.setDatabaseName(path);
     database.open();
@@ -328,22 +334,22 @@ void DB::seed()
     }
 
     // trooper
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 60; i++)
     {
         QStringList values;
         values.append(QString::number(i + 1));
         values.append("Trooper_FName_" + QString::number(i));
         values.append("Trooper_LName_" + QString::number(i));
-        values.append(QString::number(i % TROOPER_TYPES.size()));
-        values.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i));
-        values.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i));
-        values.append(QString("2018-04-11 19:0%1").arg(i));
-        values.append(QString::number(i * 2 + 5));
-        values.append(QString::number(55 + i * 3));
-        values.append(QString::number(80 + i * 2));
-        values.append(QString::number(1.6 + ((float) i / 30.0)));
+        values.append(QString::number((i < 10) ? 0 : 1));
+        values.append(QString::number(((float) qrand() / RAND_MAX) + 26 + (i % 10)));
+        values.append(QString::number(((float) qrand() / RAND_MAX) + 45 + (i % 10)));
+        values.append(QString("2018-04-11 19:0%1:00").arg((i % 10)));
+        values.append(QString::number((i % 10) * 2 + 5));
+        values.append(QString::number(55 + (i % 10) * 3));
+        values.append(QString::number(80 + (i % 10) * 2));
+        values.append(QString::number(1.6 + ((float) (i % 10) / 30.0)));
         values.append(QString::number(i % 2 == 1));
-        values.append(QString::number(i / 2));
+        values.append(QString::number((i % 10) / 2));
         query_insert("troopers", values);
     }
 
@@ -361,8 +367,17 @@ void DB::seed()
         values.append(QString::number(i * 10 + 5));
         values.append(QString::number(i * 20 + 25));
         values.append(QString::number(qrand() % 10 + 1));
-        values.append(QString::number(qrand() % 10 + 1));
+        values.append(QString::number(qrand() % 50 + 1));
         query_insert("armies", values);
+
+        // army_has_trooper
+        for (int j = 0; j < 5; j++)
+        {
+            QStringList values;
+            values.append(QString::number(i + 1));
+            values.append(QString::number(10 + i * 5 + j + 1));
+            query_insert("army_has_trooper", values);
+        }
     }
 }
 
@@ -370,28 +385,31 @@ void DB::seed()
 QueryData DB::query(const QString &query)
 {
     QueryData result;
-
-    QSqlQuery q(database);
-    q.exec(query);
-
-    if (q.lastError().type() != q.lastError().NoError)
+    for (auto singleQuery : query.split(";"))
     {
-        qDebug() << "sql:" << q.lastError().text();
-        result.error = q.lastError().text();
-        return result;
-    }
+        QSqlQuery q(database);
+        q.exec(singleQuery);
 
-    for (int i = 0; i < q.record().count(); i++)
-        result.columns.append(q.record().fieldName(i));
+        if (q.lastError().type() != q.lastError().NoError)
+        {
+            qDebug() << "sql:" << q.lastError().text();
+            result.error = q.lastError().text();
+            return result;
+        }
 
-    while (q.next())
-    {
-        QVariantList values;
+        result.columns.clear();
         for (int i = 0; i < q.record().count(); i++)
-            values.append(q.record().value(i));
-        result.rows.append(values);
-    }
+            result.columns.append(q.record().fieldName(i));
 
+        result.rows.clear();
+        while (q.next())
+        {
+            QVariantList values;
+            for (int i = 0; i < q.record().count(); i++)
+                values.append(q.record().value(i));
+            result.rows.append(values);
+        }
+    }
     return result;
 }
 

@@ -3,6 +3,7 @@
 
 #include <QString>
 
+const bool DROP_DATABASE = true;
 
 const QString USER_ROLE = "USER_ROLE";
 const QString DATETIME_PATTERN = "^(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2})$";
