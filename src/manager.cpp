@@ -462,7 +462,6 @@ Action Manager::execTroopersWindow()
 Action Manager::execTrooperSkillsWindow()
 {
     QList<Item> columns;
-    QList<QList<QVariant>> rows;
 
     // skill
     Item skill = itemFactory.createEnum("skill", TROOPER_SKILLS, 0);
@@ -470,14 +469,26 @@ Action Manager::execTrooperSkillsWindow()
 
     columns.append(skill);
 
-    for (int i = 0; i < 3; i++)
-    {
-        QList<QVariant> items;
-        items.append(TROOPER_SKILLS[i % TROOPER_SKILLS.size()]);
-        rows.append(items);
-    }
+    QString viewQuery = QString(""
+        "select skill, skill "
+        "from trooper_skills "
+        "where trooper_fk=%1"
+        "").arg(currentAction.id());
 
-    InfoDialog trooperSkillsInfo("Trooper Skill", columns, rows, QList<Action>({}));
+    QString insertQuery = QString(""
+        "insert into trooper_skills "
+        "(skill, trooper_fk) "
+        "values(%1, %2)"
+        "").arg("%1", currentAction.id());
+
+    QString updateQuery = "";
+
+    QString deleteQuery = QString(""
+        "delete from trooper_skills "
+        "where skill=%1 and trooper_fk=%2"
+        "").arg("%1", currentAction.id());
+
+    InfoDialog trooperSkillsInfo("Trooper Skill", columns, viewQuery, insertQuery, updateQuery, deleteQuery, QList<Action>({}));
     trooperSkillsInfo.exec();
     Action selectedAction = trooperSkillsInfo.getSelectedAction();
     return selectedAction;

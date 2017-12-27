@@ -26,6 +26,7 @@ public:
 private:
     static DB *ins;
     QSqlDatabase database;
+    bool dropDatabase;
 };
 
 #endif // DB_H

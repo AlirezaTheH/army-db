@@ -50,6 +50,9 @@ InfoDialog::InfoDialog(const QString &title, const QList<Item> &dataColumns,
         ui->pushButton_delete->setVisible(false);
     }
 
+    if (updateQuery.isNull() || updateQuery.isEmpty())
+        ui->pushButton_edit->setVisible(false);
+
     showData();
     showActions();
 }

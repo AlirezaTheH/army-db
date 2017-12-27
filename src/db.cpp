@@ -7,10 +7,11 @@
 DB *DB::ins = new DB();
 
 
-DB::DB()
+DB::DB():
+    dropDatabase(true)
 {
     init();
-    if (DROP_DATABASE)
+    if (dropDatabase)
     {
         createAllEntityTables();
         createAllRelationTables();
@@ -27,7 +28,7 @@ DB *DB::instance()
 void DB::init()
 {
     QString path = "army.sqlite";
-    if (DROP_DATABASE)
+    if (dropDatabase)
     {
         QFile dbfile(path);
         dbfile.remove();
@@ -351,6 +352,15 @@ void DB::seed()
         values.append(QString::number(i % 2 == 1));
         values.append(QString::number((i % 10) / 2));
         query_insert("troopers", values);
+
+        // trooper_skills
+        for (int j = 0; j < 2; j++)
+        {
+            QStringList values;
+            values.append(QString::number((i + j) % TROOPER_SKILLS.size()));
+            values.append(QString::number(i + 1));
+            query_insert("trooper_skills", values);
+        }
     }
 
     // army
