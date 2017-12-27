@@ -8,7 +8,7 @@ DB *DB::ins = new DB();
 
 
 DB::DB():
-    dropDatabase(true)
+    dropDatabase(false)
 {
     init();
     if (dropDatabase)
@@ -87,11 +87,11 @@ void DB::createAllEntityTables()
     query(
         "create table if not exists vehicles ("
         "id integer primary key autoincrement not null, "
+        "health double not null, "
+        "armor double not null, "
         "type integer not null, "
         "position_latitude double not null, "
         "position_longitude double not null, "
-        "health double not null, "
-        "armor double not null, "
         "max_speed integer not null, "
         "max_acceleration integer not null, "
         "fuel_type integer not null, "
@@ -387,6 +387,41 @@ void DB::seed()
             values.append(QString::number(i + 1));
             values.append(QString::number(10 + i * 5 + j + 1));
             query_insert("army_has_trooper", values);
+        }
+    }
+
+    // vehicle
+    for (int i = 0; i < 60; i++)
+    {
+        QStringList values;
+        values.append(QString::number(i + 1));
+        values.append(QString::number(55 + (i % 10) * 3));
+        values.append(QString::number(55 + (i % 10) * 3));
+        values.append(QString::number(i % VEHICLE_TYPES.size()));
+        values.append(QString::number(((float) qrand() / RAND_MAX) + 26 + (i % 10)));
+        values.append(QString::number(((float) qrand() / RAND_MAX) + 45 + (i % 10)));
+        values.append(QString::number(80 + (i % 10) * 7));
+        values.append(QString::number(5 + (i % 10) * 1));
+        values.append(QString::number((i % 10) % VEHICLE_FUEL_TYPES.size()));
+        values.append(QString::number(25 + (i % 10) * 7));
+        values.append(QString::number(5 + (i % 10)));
+        values.append(QString::number(1 + (i % 10) * 1));
+        query_insert("vehicles", values);
+
+        // base has vehicle
+        if (i < 30)
+        {
+            QStringList values;
+            values.append(QString::number(i / 3 + 1));
+            values.append(QString::number(i + 1));
+            query_insert("base_has_vehicle", values);
+        }
+        else // army has vehicle
+        {
+            QStringList values;
+            values.append(QString::number(i / 3 + 1 - 10));
+            values.append(QString::number(i + 1));
+            query_insert("army_has_vehicle", values);
         }
     }
 }

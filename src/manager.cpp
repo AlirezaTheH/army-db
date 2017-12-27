@@ -446,8 +446,8 @@ Action Manager::execTroopersWindow()
     QString updateQuery = QString(""
         "replace into troopers "
         "(id, first_name, last_name, type, position_latitude, position_longitude, birth_datetime, grade, health, weight, height, is_single, children_count) "
-        "values(%1, %2, %3)"
-        "").arg("%1", "%2", currentAction.id());
+        "values(%1, %2)"
+        "").arg("%1", "%2");
 
     QString deleteQuery = "delete from troopers where id=%1";
 
@@ -580,7 +580,6 @@ Action Manager::execFortificationsWindow()
 Action Manager::execVehiclesWindow()
 {
     QList<Item> columns;
-    QList<QList<QVariant>> rows;
 
     // health
     Item health = itemFactory.createReal("health", 100);
@@ -595,7 +594,6 @@ Action Manager::execVehiclesWindow()
     armor.setProperty(MINIMUM, 0);
     armor.setProperty(LIMIT_MAXIMUM, true);
     armor.setProperty(MAXIMUM, 100);
-
 
     // type
     Item type = itemFactory.createEnum("type", VEHICLE_TYPES, 0);
@@ -665,24 +663,33 @@ Action Manager::execVehiclesWindow()
     columns.append(fuel_consuming_unit);
     columns.append(max_passengers);
 
-    for (int i = 0; i < 10; i++)
-    {
-        QList<QVariant> items;
-        items.append(55 + i * 3);
-        items.append(55 + i * 3);
-        items.append(VEHICLE_TYPES[i % VEHICLE_TYPES.size()]);
-        items.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i).toDouble());
-        items.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i).toDouble());
-        items.append(80 + i * 7);
-        items.append(5 + i * 1);
-        items.append(VEHICLE_FUEL_TYPES[i % VEHICLE_FUEL_TYPES.size()]);
-        items.append(25 + i * 7);
-        items.append(5 + i);
-        items.append(1 + i * 1);
-        rows.append(items);
-    }
+    QString parnetTable = (currentAction.type() == ActionType::ShowBases) ? "base" : "army";
 
-    InfoDialog vehiclesInfo("Vehicle", columns, rows, QList<Action>({}));
+    QString viewQuery = QString(""
+        "select id, health, armor, type, position_latitude, position_longitude, max_speed, max_acceleration, fuel_type, fuel_max_capacity, fuel_consuming_unit, max_passengers "
+        "from vehicles, %2_has_vehicle "
+        "where id=%2_has_vehicle.vehicle_fk and %2_has_vehicle.%2_fk=%1"
+        "").arg(currentAction.id(), parnetTable);
+
+    QString insertQuery = QString(""
+        "insert into vehicles "
+        "(id, health, armor, type, position_latitude, position_longitude, max_speed, max_acceleration, fuel_type, fuel_max_capacity, fuel_consuming_unit, max_passengers) "
+        "values(NULL, %1)"
+        ";"
+        "insert into %3_has_vehicle "
+        "(%3_fk, vehicle_fk)"
+        "values(%2, (select max(id) from vehicles))"
+        "").arg("%1", currentAction.id(), parnetTable);
+
+    QString updateQuery = QString(""
+        "replace into vehicles "
+        "(id, health, armor, type, position_latitude, position_longitude, max_speed, max_acceleration, fuel_type, fuel_max_capacity, fuel_consuming_unit, max_passengers) "
+        "values(%1, %2)"
+        "").arg("%1", "%2");
+
+    QString deleteQuery = "delete from vehicles where id=%1";
+
+    InfoDialog vehiclesInfo("Vehicle", columns, viewQuery, insertQuery, updateQuery, deleteQuery, QList<Action>({}));
     vehiclesInfo.exec();
     Action selectedAction = vehiclesInfo.getSelectedAction();
     return selectedAction;
