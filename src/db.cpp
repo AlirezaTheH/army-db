@@ -478,6 +478,42 @@ void DB::seed()
             query_insert("army_has_ammo", values);
         }
     }
+
+    // weapon
+    for (int i = 0; i < 50; i++)
+    {
+        QStringList values;
+        values.append(QString::number(i + 1));
+        values.append("Weapon_Name_" + QString::number(i));
+        values.append(QString::number(i % WEAPON_TYPES.size()));
+        values.append(QString::number(i % WEAPON_MODELS.size()));
+        values.append(QString::number(.2 + (i % 10) * 7));
+        values.append(QString::number(17 + (i % 10) * 1));
+        values.append(QString::number(.1 + (i % 10) * .1));
+        values.append(QString::number(.1 + (i % 10) * .1));
+        values.append(QString::number(.1 + (i % 10) * .1));
+        values.append(QString::number((i % 10) + 1));
+        values.append(QString::number(500 + (i % 10) * 120));
+        values.append(QString::number(3 + (i % 10)));
+        values.append(QString::number(6 + (i % 10) * 7));
+        query_insert("weapons", values);
+
+        // army_has_weapon
+        {
+            QStringList values;
+            values.append(QString::number(i / 5 + 1));
+            values.append(QString::number(i + 1));
+            query_insert("army_has_weapon", values);
+        }
+
+        // weapon can use ammo
+        {
+            QStringList values;
+            values.append(QString::number(i + 1));
+            values.append(QString::number(i + 1));
+            query_insert("weapon_canuse_ammo", values);
+        }
+    }
 }
 
 

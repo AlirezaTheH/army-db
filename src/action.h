@@ -16,7 +16,8 @@ enum class ActionType
     ShowVehicles,
     ShowAmmo,
     ShowWeapons,
-    ShowSuits
+    ShowSuits,
+    ShowWeaponCanUseAmmo
 };
 
 

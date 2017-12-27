@@ -68,6 +68,9 @@ void Manager::exec()
             case ActionType::ShowSuits:
                 action = execSuitsWindow();
                 break;
+            case ActionType::ShowWeaponCanUseAmmo:
+                action = execWeaponCanUseAmmoWindow();
+                break;
             default:
                 break;
         }
@@ -369,7 +372,7 @@ Action Manager::execTroopersWindow()
     positionLongitude.setProperty(MAXIMUM, 61.4949f);
 
     // birth datetime
-    Item birthDatetime = itemFactory.createString("birth_datetime", "2018-02-12 23:43");
+    Item birthDatetime = itemFactory.createString("birth_datetime", "2000-02-12 10:20");
     birthDatetime.setProperty(ALLOW_NULL, false);
     birthDatetime.setProperty(MINIMUM_LENGTH, -1);
     birthDatetime.setProperty(MAXIMUM_LENGTH, -1);
@@ -796,7 +799,6 @@ Action Manager::execAmmoWindow()
 Action Manager::execWeaponsWindow()
 {
     QList<Item> columns;
-    QList<QList<QVariant>> rows;
 
     // name
     Item name = itemFactory.createString("name", "Name_0");
@@ -809,12 +811,12 @@ Action Manager::execWeaponsWindow()
     Item type = itemFactory.createEnum("type", WEAPON_TYPES, 0);
 
     // model
-    Item model = itemFactory.createEnum("type", WEAPON_MODELS, 0);
+    Item model = itemFactory.createEnum("model", WEAPON_MODELS, 0);
 
     // weight
-    Item weight = itemFactory.createReal("weight", .1);
+    Item weight = itemFactory.createReal("weight", .2);
     weight.setProperty(LIMIT_MINIMUM, true);
-    weight.setProperty(MINIMUM, .1f);
+    weight.setProperty(MINIMUM, .1);
     weight.setProperty(LIMIT_MAXIMUM, true);
     weight.setProperty(MAXIMUM, 200);
 
@@ -826,25 +828,25 @@ Action Manager::execWeaponsWindow()
     count.setProperty(MAXIMUM, 1000000);
 
     // width
-    Item width = itemFactory.createReal("width", .02);
+    Item width = itemFactory.createReal("width", .2);
     width.setProperty(LIMIT_MINIMUM, true);
-    width.setProperty(MINIMUM, .01f);
+    width.setProperty(MINIMUM, .1);
     width.setProperty(LIMIT_MAXIMUM, true);
     width.setProperty(MAXIMUM, 1);
 
     // length
-    Item length = itemFactory.createReal("length", .02);
+    Item length = itemFactory.createReal("length", .2);
     length.setProperty(LIMIT_MINIMUM, true);
-    length.setProperty(MINIMUM, .01f);
+    length.setProperty(MINIMUM, .1);
     length.setProperty(LIMIT_MAXIMUM, true);
     length.setProperty(MAXIMUM, 1);
 
     // height
-    Item height = itemFactory.createReal("height", .02);
+    Item height = itemFactory.createReal("height", .2);
     height.setProperty(LIMIT_MINIMUM, true);
-    height.setProperty(MINIMUM, .01f);
+    height.setProperty(MINIMUM, .1);
     height.setProperty(LIMIT_MAXIMUM, true);
-    height.setProperty(MAXIMUM, 10);
+    height.setProperty(MAXIMUM, 1);
 
     // fire speed
     Item fire_speed = itemFactory.createInteger("fire_speed", 5);
@@ -888,25 +890,32 @@ Action Manager::execWeaponsWindow()
     columns.append(average_realod_time);
     columns.append(magazine_size);
 
-    for (int i = 0; i < 10; i++)
-    {
-        QList<QVariant> items;
-        items.append("Weapon_Name_" + QString::number(i));
-        items.append(WEAPON_TYPES[i % WEAPON_TYPES.size()]);
-        items.append(WEAPON_MODELS[i % WEAPON_MODELS.size()]);
-        items.append(.2 + i * 7);
-        items.append(17 + i * 1);
-        items.append(.1 + i * .1);
-        items.append(.1 + i * .1);
-        items.append(.1 + i);
-        items.append(i);
-        items.append(500 + i * 120);
-        items.append(3 + i);
-        items.append(6 + i * 7);
-        rows.append(items);
-    }
+    QString viewQuery = QString(""
+        "select id, name, type, model, weight, count, width, length, height, fire_speed, max_range, average_realod_time, magazine_size "
+        "from weapons, army_has_weapon "
+        "where id=army_has_weapon.weapon_fk and army_has_weapon.army_fk=%1"
+        "").arg(currentAction.id());
 
-    InfoDialog weaponsInfo("Ammo", columns, rows, QList<Action>({}));
+    QString insertQuery = QString(""
+        "insert into weapons "
+        "(id, name, type, model, weight, count, width, length, height, fire_speed, max_range, average_realod_time, magazine_size) "
+        "values(NULL, %1)"
+        ";"
+        "insert into army_has_weapon "
+        "(army_fk, weapon_fk)"
+        "values(%2, (select max(id) from weapons))"
+        "").arg("%1", currentAction.id());
+
+    QString updateQuery = QString(""
+        "replace into weapons "
+        "(id, name, type, model, weight, count, width, length, height, fire_speed, max_range, average_realod_time, magazine_size) "
+        "values(%1, %2)"
+        "").arg("%1", "%2");
+
+    QString deleteQuery = "delete from weapons where id=%1";
+
+    InfoDialog weaponsInfo("Weapon", columns, viewQuery, insertQuery, updateQuery, deleteQuery,
+                           QList<Action>({Action(ActionType::ShowWeaponCanUseAmmo)}));
     weaponsInfo.exec();
     Action selectedAction = weaponsInfo.getSelectedAction();
     return selectedAction;
@@ -971,5 +980,44 @@ Action Manager::execSuitsWindow()
     InfoDialog suitInfo("Suit", columns, viewQuery, insertQuery, updateQuery, deleteQuery, QList<Action>({}));
     suitInfo.exec();
     Action selectedAction = suitInfo.getSelectedAction();
+    return selectedAction;
+}
+
+
+Action Manager::execWeaponCanUseAmmoWindow()
+{
+    QList<Item> columns;
+
+    // ammo_fk
+    QStringList ammo_ids;
+    QueryData result = DB::instance()->query("select id from ammo");
+    for (auto x : result.rows)
+        ammo_ids.append(x[0].toString());
+    Item ammo_fk = itemFactory.createStringList("ammo_fk", ammo_ids, ammo_ids[0]);
+
+    columns.append(ammo_fk);
+
+    QString viewQuery = QString(""
+        "select ammo_fk, ammo_fk "
+        "from weapon_canuse_ammo "
+        "where weapon_fk=%1"
+        "").arg(currentAction.id());
+
+    QString insertQuery = QString(""
+        "insert into weapon_canuse_ammo "
+        "(ammo_fk, weapon_fk) "
+        "values(%1, %2)"
+        "").arg("%1", currentAction.id());
+
+    QString updateQuery = "";
+
+    QString deleteQuery = QString(""
+        "delete from weapon_canuse_ammo "
+        "where ammo_fk=%1 and weapon_fk=%2"
+        "").arg("%1", currentAction.id());
+
+    InfoDialog weaponCanUseAmmoInfo("Weapon Can Use Ammo", columns, viewQuery, insertQuery, updateQuery, deleteQuery, QList<Action>({}));
+    weaponCanUseAmmoInfo.exec();
+    Action selectedAction = weaponCanUseAmmoInfo.getSelectedAction();
     return selectedAction;
 }

@@ -14,7 +14,8 @@ Action::Action(const ActionType &type):
         "Show Vehicles",
         "Show Ammo",
         "Show Weapons",
-        "Show Suits"
+        "Show Suits",
+        "Show Weapon Can Use Ammo"
     });
 }
 

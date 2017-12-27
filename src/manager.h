@@ -23,6 +23,7 @@ private:
     Action execAmmoWindow();
     Action execWeaponsWindow();
     Action execSuitsWindow();
+    Action execWeaponCanUseAmmoWindow();
 
 private:
     ItemFactory itemFactory;
