@@ -8,7 +8,7 @@ DB *DB::ins = new DB();
 
 
 DB::DB():
-    dropDatabase(false)
+    dropDatabase(true)
 {
     init();
     if (dropDatabase)
@@ -191,7 +191,7 @@ void DB::createAllEntityTables()
         "type integer not null, "
         "size integer not null, "
         "armor double not null, "
-        "in_use boolean not null"
+        "can_use boolean not null"
         ")"
     );
 }
@@ -432,8 +432,8 @@ void DB::seed()
         QStringList values;
         values.append(QString::number(i + 1));
         values.append(QString::number(i % SUIT_TYPES.size()));
-        values.append(QString::number(i));
-        values.append(QString::number(50 + i * 3));
+        values.append(QString::number((i % 10)));
+        values.append(QString::number(50 + (i % 10) * 3));
         values.append(QString::number((i < 30) ? 0 : 1));
         query_insert("suits", values);
 
@@ -455,20 +455,29 @@ void DB::seed()
     }
 
     // ammo
-    /*for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 50; i++)
     {
         QStringList values;
+        values.append(QString::number(i + 1));
         values.append("Ammo_Name_" + QString::number(i));
         values.append(QString::number(i % AMMO_TYPES.size()));
         values.append(QString::number(i % AMMO_SURFACE_MATERAIL.size()));
         values.append(QString::number(i % AMMO_EXPLOSION_MATERIAL.size()));
-        values.append(QString::number(.2 + i * 7));
-        values.append(QString::number(17 + i * 1));
-        values.append(QString::number(.1 + i * .1));
-        values.append(QString::number(.1 + i * .1));
-        values.append(QString::number(.1 + i));
+        values.append(QString::number(.2 + (i % 10) * 7));
+        values.append(QString::number(17 + (i % 10) * 1));
+        values.append(QString::number(.1 + (i % 10) * .1));
+        values.append(QString::number(.1 + (i % 10) * .1));
+        values.append(QString::number(.1 + (i % 10)));
         query_insert("ammo", values);
-    }*/
+
+        // army_has_ammo
+        {
+            QStringList values;
+            values.append(QString::number(i / 5 + 1));
+            values.append(QString::number(i + 1));
+            query_insert("army_has_ammo", values);
+        }
+    }
 }
 
 

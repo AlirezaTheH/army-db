@@ -699,7 +699,6 @@ Action Manager::execVehiclesWindow()
 Action Manager::execAmmoWindow()
 {
     QList<Item> columns;
-    QList<QList<QVariant>> rows;
 
     // name
     Item name = itemFactory.createString("name", "Name_0");
@@ -718,9 +717,9 @@ Action Manager::execAmmoWindow()
     Item explosion_material = itemFactory.createEnum("explosion_material", AMMO_EXPLOSION_MATERIAL, 0);
 
     // weight
-    Item weight = itemFactory.createReal("weight", .1);
+    Item weight = itemFactory.createReal("weight", .2);
     weight.setProperty(LIMIT_MINIMUM, true);
-    weight.setProperty(MINIMUM, .1f);
+    weight.setProperty(MINIMUM, .1);
     weight.setProperty(LIMIT_MAXIMUM, true);
     weight.setProperty(MAXIMUM, 200);
 
@@ -734,21 +733,21 @@ Action Manager::execAmmoWindow()
     // width
     Item width = itemFactory.createReal("width", .02);
     width.setProperty(LIMIT_MINIMUM, true);
-    width.setProperty(MINIMUM, .01f);
+    width.setProperty(MINIMUM, .01);
     width.setProperty(LIMIT_MAXIMUM, true);
     width.setProperty(MAXIMUM, 1);
 
     // length
     Item length = itemFactory.createReal("length", .02);
     length.setProperty(LIMIT_MINIMUM, true);
-    length.setProperty(MINIMUM, .01f);
+    length.setProperty(MINIMUM, .01);
     length.setProperty(LIMIT_MAXIMUM, true);
     length.setProperty(MAXIMUM, 1);
 
     // height
     Item height = itemFactory.createReal("height", .02);
     height.setProperty(LIMIT_MINIMUM, true);
-    height.setProperty(MINIMUM, .01f);
+    height.setProperty(MINIMUM, .01);
     height.setProperty(LIMIT_MAXIMUM, true);
     height.setProperty(MAXIMUM, 10);
 
@@ -763,22 +762,31 @@ Action Manager::execAmmoWindow()
     columns.append(length);
     columns.append(height);
 
-    for (int i = 0; i < 10; i++)
-    {
-        QList<QVariant> items;
-        items.append("Ammo_Name_" + QString::number(i));
-        items.append(AMMO_TYPES[i % AMMO_TYPES.size()]);
-        items.append(AMMO_SURFACE_MATERAIL[i % AMMO_SURFACE_MATERAIL.size()]);
-        items.append(AMMO_EXPLOSION_MATERIAL[i % AMMO_EXPLOSION_MATERIAL.size()]);
-        items.append(.2 + i * 7);
-        items.append(17 + i * 1);
-        items.append(.1 + i * .1);
-        items.append(.1 + i * .1);
-        items.append(.1 + i);
-        rows.append(items);
-    }
+    QString viewQuery = QString(""
+        "select id, name, type, surface_material, explosion_material, weight, count, width, length, height "
+        "from ammo, army_has_ammo "
+        "where id=army_has_ammo.ammo_fk and army_has_ammo.army_fk=%1"
+        "").arg(currentAction.id());
 
-    InfoDialog ammoInfo("Ammo", columns, rows, QList<Action>({}));
+    QString insertQuery = QString(""
+        "insert into ammo "
+        "(id, name, type, surface_material, explosion_material, weight, count, width, length, height) "
+        "values(NULL, %1)"
+        ";"
+        "insert into army_has_ammo "
+        "(army_fk, ammo_fk)"
+        "values(%2, (select max(id) from ammo))"
+        "").arg("%1", currentAction.id());
+
+    QString updateQuery = QString(""
+        "replace into ammo "
+        "(id, name, type, surface_material, explosion_material, weight, count, width, length, height) "
+        "values(%1, %2)"
+        "").arg("%1", "%2");
+
+    QString deleteQuery = "delete from ammo where id=%1";
+
+    InfoDialog ammoInfo("Ammo", columns, viewQuery, insertQuery, updateQuery, deleteQuery, QList<Action>({}));
     ammoInfo.exec();
     Action selectedAction = ammoInfo.getSelectedAction();
     return selectedAction;
@@ -925,14 +933,14 @@ Action Manager::execSuitsWindow()
     armor.setProperty(LIMIT_MAXIMUM, true);
     armor.setProperty(MAXIMUM, 100);
 
-    // in use
-    Item inUse = itemFactory.createBoolean("in_use", false);
+    // can use
+    Item canUse = itemFactory.createBoolean("can_use", false);
 
 
     columns.append(type);
     columns.append(size);
     columns.append(armor);
-    columns.append(inUse);
+    columns.append(canUse);
 
     QString parnetTable = (actionsHistory[actionsHistory.size() - 2].type() == ActionType::ShowBases) ? "base" : "trooper";
 
