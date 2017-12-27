@@ -452,7 +452,7 @@ Action Manager::execTroopersWindow()
     QString deleteQuery = "delete from troopers where id=%1";
 
     InfoDialog troopersInfo("Trooper", columns, viewQuery, insertQuery, updateQuery, deleteQuery,
-                            QList<Action>({Action(ActionType::ShowTrooperSkills)}));
+                            QList<Action>({Action(ActionType::ShowTrooperSkills), Action(ActionType::ShowSuits)}));
     troopersInfo.exec();
     Action selectedAction = troopersInfo.getSelectedAction();
     return selectedAction;
@@ -663,7 +663,7 @@ Action Manager::execVehiclesWindow()
     columns.append(fuel_consuming_unit);
     columns.append(max_passengers);
 
-    QString parnetTable = (currentAction.type() == ActionType::ShowBases) ? "base" : "army";
+    QString parnetTable = (actionsHistory[actionsHistory.size() - 2].type() == ActionType::ShowBases) ? "base" : "army";
 
     QString viewQuery = QString(""
         "select id, health, armor, type, position_latitude, position_longitude, max_speed, max_acceleration, fuel_type, fuel_max_capacity, fuel_consuming_unit, max_passengers "
@@ -907,7 +907,6 @@ Action Manager::execWeaponsWindow()
 Action Manager::execSuitsWindow()
 {
     QList<Item> columns;
-    QList<QList<QVariant>> rows;
 
     // type
     Item type = itemFactory.createEnum("type", SUIT_TYPES, 0);
@@ -927,7 +926,7 @@ Action Manager::execSuitsWindow()
     armor.setProperty(MAXIMUM, 100);
 
     // in use
-    Item inUse = itemFactory.createBoolean("in_use", true);
+    Item inUse = itemFactory.createBoolean("in_use", false);
 
 
     columns.append(type);
@@ -935,17 +934,33 @@ Action Manager::execSuitsWindow()
     columns.append(armor);
     columns.append(inUse);
 
-    for (int i = 0; i < 10; i++)
-    {
-        QList<QVariant> items;
-        items.append(SUIT_TYPES[i % SUIT_TYPES.size()]);
-        items.append(i);
-        items.append(50 + i * 3);
-        items.append(i % 2 == 1);
-        rows.append(items);
-    }
+    QString parnetTable = (actionsHistory[actionsHistory.size() - 2].type() == ActionType::ShowBases) ? "base" : "trooper";
 
-    InfoDialog suitInfo("Suit", columns, rows, QList<Action>({}));
+    QString viewQuery = QString(""
+        "select id, type, size, armor, in_use "
+        "from suits, %2_has_suit "
+        "where id=%2_has_suit.suit_fk and %2_has_suit.%2_fk=%1"
+        "").arg(currentAction.id(), parnetTable);
+
+    QString insertQuery = QString(""
+        "insert into suits "
+        "(id, type, size, armor, in_use) "
+        "values(NULL, %1)"
+        ";"
+        "insert into %3_has_suit "
+        "(%3_fk, suit_fk)"
+        "values(%2, (select max(id) from suits))"
+        "").arg("%1", currentAction.id(), parnetTable);
+
+    QString updateQuery = QString(""
+        "replace into suits "
+        "(id, type, size, armor, in_use) "
+        "values(%1, %2)"
+        "").arg("%1", "%2");
+
+    QString deleteQuery = "delete from suits where id=%1";
+
+    InfoDialog suitInfo("Suit", columns, viewQuery, insertQuery, updateQuery, deleteQuery, QList<Action>({}));
     suitInfo.exec();
     Action selectedAction = suitInfo.getSelectedAction();
     return selectedAction;

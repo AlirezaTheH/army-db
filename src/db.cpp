@@ -153,6 +153,7 @@ void DB::createAllEntityTables()
     query(
         "create table if not exists ammo ("
         "id integer primary key autoincrement not null, "
+        "name varchar(128) not null, "
         "type integer not null, "
         "surface_material integer not null, "
         "explosion_material integer not null, "
@@ -264,14 +265,14 @@ void DB::createAllRelationTables()
         ")"
     );
 
-    // create suit belongs to trooper
+    // create trooper has suit
     query(
-        "create table if not exists suit_belongsto_trooper ("
-        "suit_fk integer not null, "
+        "create table if not exists trooper_has_suit ("
         "trooper_fk integer not null, "
-        "foreign key (suit_fk) references suits(id), "
+        "suit_fk integer not null, "
         "foreign key (trooper_fk) references troopers(id), "
-        "primary key (suit_fk, trooper_fk)"
+        "foreign key (suit_fk) references suits(id), "
+        "primary key (trooper_fk, suit_fk)"
         ")"
     );
 
@@ -424,6 +425,50 @@ void DB::seed()
             query_insert("army_has_vehicle", values);
         }
     }
+
+    // suit
+    for (int i = 0; i < 90; i++)
+    {
+        QStringList values;
+        values.append(QString::number(i + 1));
+        values.append(QString::number(i % SUIT_TYPES.size()));
+        values.append(QString::number(i));
+        values.append(QString::number(50 + i * 3));
+        values.append(QString::number((i < 30) ? 0 : 1));
+        query_insert("suits", values);
+
+        // base has suit
+        if (i < 30)
+        {
+            QStringList values;
+            values.append(QString::number(i / 3 + 1));
+            values.append(QString::number(i + 1));
+            query_insert("base_has_suit", values);
+        }
+        else // trooper has suit
+        {
+            QStringList values;
+            values.append(QString::number(i - 30 + 1));
+            values.append(QString::number(i + 1));
+            query_insert("trooper_has_suit", values);
+        }
+    }
+
+    // ammo
+    /*for (int i = 0; i < 10; i++)
+    {
+        QStringList values;
+        values.append("Ammo_Name_" + QString::number(i));
+        values.append(QString::number(i % AMMO_TYPES.size()));
+        values.append(QString::number(i % AMMO_SURFACE_MATERAIL.size()));
+        values.append(QString::number(i % AMMO_EXPLOSION_MATERIAL.size()));
+        values.append(QString::number(.2 + i * 7));
+        values.append(QString::number(17 + i * 1));
+        values.append(QString::number(.1 + i * .1));
+        values.append(QString::number(.1 + i * .1));
+        values.append(QString::number(.1 + i));
+        query_insert("ammo", values);
+    }*/
 }
 
 
