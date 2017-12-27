@@ -117,7 +117,8 @@ enum class ItemType
     Integer,
     Real,
     Boolean,
-    Enumeration
+    Enumeration,
+    StringList
 };
 
 #endif // ITEM_H

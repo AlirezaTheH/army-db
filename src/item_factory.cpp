@@ -18,20 +18,6 @@ Item ItemFactory::createString(const QString &name, const QString &value) const
     );
 }
 
-Item ItemFactory::createString(const QString &name, const QList<QString> &values) const
-{
-    QList<QVariant> variantValues;
-    for (auto x : values)
-        variantValues.append(x);
-
-    return Item(
-        ItemType::String,
-        name,
-        QList<QString> ({ALLOW_NULL, MINIMUM_LENGTH, MAXIMUM_LENGTH}),
-        variantValues
-    );
-}
-
 
 Item ItemFactory::createInteger(const QString &name, const int &value) const
 {
@@ -40,20 +26,6 @@ Item ItemFactory::createInteger(const QString &name, const int &value) const
         name,
         QList<QString> ({LIMIT_MINIMUM, LIMIT_MAXIMUM, MINIMUM, MAXIMUM}),
         value
-    );
-}
-
-Item ItemFactory::createInteger(const QString &name, const QList<int> &values) const
-{
-    QList<QVariant> variantValues;
-    for (auto x : values)
-        variantValues.append(x);
-
-    return Item (
-        ItemType::Integer,
-        name,
-        QList<QString> ({LIMIT_MINIMUM, LIMIT_MAXIMUM, MINIMUM, MAXIMUM}),
-        variantValues
     );
 }
 
@@ -68,20 +40,6 @@ Item ItemFactory::createReal(const QString &name, const double &value) const
     );
 }
 
-Item ItemFactory::createReal(const QString &name, const QList<double> &values) const
-{
-    QList<QVariant> variantValues;
-    for (auto x : values)
-        variantValues.append(x);
-
-    return Item (
-        ItemType::Real,
-        name,
-        QList<QString> ({LIMIT_MINIMUM, LIMIT_MAXIMUM, MINIMUM, MAXIMUM}),
-        variantValues
-    );
-}
-
 
 Item ItemFactory::createBoolean(const QString &name, const bool &value) const
 {
@@ -90,20 +48,6 @@ Item ItemFactory::createBoolean(const QString &name, const bool &value) const
         name,
         QList<QString> ({}),
         value
-    );
-}
-
-Item ItemFactory::createBoolean(const QString &name, const QList<bool> &values) const
-{
-    QList<QVariant> variantValues;
-    for (auto x : values)
-        variantValues.append(x);
-
-    return Item (
-        ItemType::Boolean,
-        name,
-        QList<QString> ({}),
-        variantValues
     );
 }
 
@@ -124,22 +68,17 @@ Item ItemFactory::createEnum(const QString &name, const QStringList &attrs, cons
     return item;
 }
 
-Item ItemFactory::createEnum(const QString &name, const QStringList &attrs, const QList<int> &values) const
-{
-    QList<QVariant> variantValues;
-    for (auto x : values)
-        variantValues.append(x);
 
+Item ItemFactory::createStringList(const QString &name, const QStringList &attrs, const QString &value) const
+{
     Item item(
-        ItemType::Enumeration,
+        ItemType::StringList,
         name,
-        QList<QString> ({ENUM_ATTRS, MINIMUM, MAXIMUM}),
-        variantValues
+        QList<QString> ({LIST_ATTRS}),
+        value
     );
 
-    item.setProperty(ENUM_ATTRS, attrs);
-    item.setProperty(MINIMUM, 0);
-    item.setProperty(MAXIMUM, attrs.size() - 1);
+    item.setProperty(LIST_ATTRS, attrs);
 
     return item;
 }

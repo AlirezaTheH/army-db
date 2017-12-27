@@ -65,6 +65,11 @@ void FormDialog::setupProperties()
                 ((QComboBox*) tableItem)->addItems(items[i]->property<QStringList>(ENUM_ATTRS));
                 ((QComboBox*) tableItem)->setCurrentIndex(items[i]->value<int>());
                 break;
+            case ItemType::StringList:
+                tableItem = new QComboBox();
+                ((QComboBox*) tableItem)->addItems(items[i]->property<QStringList>(LIST_ATTRS));
+                ((QComboBox*) tableItem)->setCurrentText(items[i]->value<QString>());
+                break;
             default:
                 break;
         }
@@ -176,6 +181,10 @@ void FormDialog::on_pushButton_done_clicked()
 
             case ItemType::Enumeration:
                 items[i]->setValue(((QComboBox*) cell)->currentIndex());
+                break;
+
+            case ItemType::StringList:
+                items[i]->setValue(((QComboBox*) cell)->currentText());
                 break;
 
             default:

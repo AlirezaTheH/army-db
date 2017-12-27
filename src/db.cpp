@@ -213,6 +213,17 @@ void DB::createAllRelationTables()
         ")"
     );
 
+    // create army has trooper
+    query(
+        "create table if not exists army_has_trooper ("
+        "army_fk integer not null, "
+        "trooper_fk integer not null, "
+        "foreign key (army_fk) references armies(id), "
+        "foreign key (trooper_fk) references troopers(id), "
+        "primary key (army_fk, trooper_fk)"
+        ")"
+    );
+
     // create army has vehicle
     query(
         "create table if not exists army_has_vehicle ("

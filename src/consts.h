@@ -16,6 +16,8 @@ const QString LIMIT_MINIMUM = "LIMIT_MINIMUM";
 const QString LIMIT_MAXIMUM = "LIMIT_MAXIMUM";
 const QString PATTERN = "PATTERN";
 const QString ENUM_ATTRS = "ENUM_ATTRS";
+const QString LIST_ATTRS = "LIST_ATTRS";
+
 
 const QStringList ARMY_FORCE_TYPES({
     "Air Force",

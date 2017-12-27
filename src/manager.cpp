@@ -235,7 +235,6 @@ Action Manager::execBasesWindow()
 Action Manager::execArmiesWindow()
 {
     QList<Item> columns;
-    QList<QList<QVariant>> rows;
 
     // name
     Item name = itemFactory.createString("name", "Army_0");
@@ -285,6 +284,13 @@ Action Manager::execArmiesWindow()
     trooperCapacity.setProperty(LIMIT_MAXIMUM, true);
     trooperCapacity.setProperty(MAXIMUM, 500);
 
+    // commander_fk
+    QStringList commander_ids;
+    QueryData result = DB::instance()->query("select id from troopers where type=0");
+    for (auto x : result.rows)
+        commander_ids.append(x[0].toString());
+    Item commander_fk = itemFactory.createStringList("commander_fk", commander_ids, commander_ids[0]);
+
 
     columns.append(name);
     columns.append(forceType);
@@ -294,25 +300,34 @@ Action Manager::execArmiesWindow()
     columns.append(radius);
     columns.append(vehicleCapacity);
     columns.append(trooperCapacity);
+    columns.append(commander_fk);
 
-    for (int i = 0; i < 10; i++)
-    {
-        QList<QVariant> items;
-        items.append("Army_" + QString::number(i));
-        items.append(ARMY_FORCE_TYPES[i % ARMY_FORCE_TYPES.size()]);
-        items.append(ARMY_SIZE_TYPES[i % ARMY_SIZE_TYPES.size()]);
-        items.append(QString::number(((float) qrand() / RAND_MAX) + 26 + i).toDouble());
-        items.append(QString::number(((float) qrand() / RAND_MAX) + 45 + i).toDouble());
-        items.append(100 + i);
-        items.append(i * 10 + 5);
-        items.append(i * 20 + 25);
-        rows.append(items);
-    }
+    QString viewQuery = QString(""
+        "select id, name, force_type, size_type, position_latitude, position_longitude, radius, vehicle_capacity, trooper_capacity, commander_fk "
+        "from armies "
+        "where base_fk=%1"
+        "").arg(currentAction.id());
 
-    InfoDialog armiesInfo("Army", columns, rows, QList<Action>({Action(ActionType::ShowTroopers),
-                                                                Action(ActionType::ShowVehicles),
-                                                                Action(ActionType::ShowAmmo),
-                                                                Action(ActionType::ShowWeapons)}));
+    QString insertQuery = QString(""
+        "insert into armies "
+        "(id, name, force_type, size_type, position_latitude, position_longitude, radius, vehicle_capacity, trooper_capacity, commander_fk, base_fk) "
+        "values(NULL, %1, %2)"
+        "").arg("%1", currentAction.id());
+
+    QString updateQuery = QString(""
+        "replace into armies "
+        "(id, name, force_type, size_type, position_latitude, position_longitude, radius, vehicle_capacity, trooper_capacity, commander_fk, base_fk) "
+        "values(%1, %2, %3)"
+        "").arg("%1", "%2", currentAction.id());
+
+    QString deleteQuery = "delete from armies where id=%1";
+
+    InfoDialog armiesInfo("Army", columns, viewQuery, insertQuery, updateQuery, deleteQuery,
+        QList<Action>({Action(ActionType::ShowTroopers),
+                       Action(ActionType::ShowVehicles),
+                       Action(ActionType::ShowAmmo),
+                       Action(ActionType::ShowWeapons)})
+    );
     armiesInfo.exec();
     Action selectedAction = armiesInfo.getSelectedAction();
     return selectedAction;

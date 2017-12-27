@@ -10,19 +10,16 @@ public:
     ItemFactory();
 
     Item createString(const QString &name, const QString &value) const;
-    Item createString(const QString &name, const QList<QString> &values) const;
 
     Item createInteger(const QString &name, const int &value) const;
-    Item createInteger(const QString &name, const QList<int> &values) const;
 
     Item createReal(const QString &name, const double &value) const;
-    Item createReal(const QString &name, const QList<double> &values) const;
 
     Item createBoolean(const QString &name, const bool &value) const;
-    Item createBoolean(const QString &name, const QList<bool> &values) const;
 
     Item createEnum(const QString &name, const QStringList &attrs, const int &value) const;
-    Item createEnum(const QString &name, const QStringList &attrs, const QList<int> &values) const;
+
+    Item createStringList(const QString &name, const QStringList &attrs, const QString &value) const;
 };
 
 #endif // ITEM_FACTORY_H
