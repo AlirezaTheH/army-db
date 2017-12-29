@@ -194,6 +194,58 @@ void DB::createAllEntityTables()
         "can_use boolean not null"
         ")"
     );
+
+    // event
+
+    query(
+        "create table if not exists events ("
+        "id integer primary key autoincrement not null, "
+        "battlefield_fk integer not null, "
+        "occured_at_datetime datetime not null, "
+        "position_latitude double not null, "
+        "position_longitude double not null, "
+        "foreign key (battlefield_fk) references battlefields(id)"
+        ")"
+    );
+
+    // strike
+    query(
+        "create table if not exists strikes ("
+        "id integer primary key not null, "
+        "damage double not null, "
+        "foreign key (id) references events(id)"
+        ")"
+    );
+
+    // death
+    query(
+        "create table if not exists deaths ("
+        "id integer primary key not null, "
+        "trooper_fk integer not null, "
+        "reason varchar(128) not null, "
+        "foreign key (id) references events(id)"
+        "foreign key (trooper_fk) references troopers(id)"
+        ")"
+    );
+
+    // target
+    query(
+        "create table if not exists targets ("
+        "id integer primary key not null, "
+        "type integer not null"
+        ")"
+    );
+
+    // strike to target
+    query(
+        "create table if not exists strike_to_target ("
+        "target_fk integer not null, "
+        "strike_fk integer not null, "
+        "foreign key (target_fk) references targets(id), "
+        "foreign key (strike_fk) references strikes(id), "
+        "primary key (target_fk, strike_fk)"
+        ")"
+    );
 }
 
 
