@@ -7,7 +7,6 @@
 #include "global_storage.h"
 #include "roles.h"
 #include "info_dialog.h"
-#include "query_dialog.h"
 
 
 Manager::Manager()
@@ -16,13 +15,6 @@ Manager::Manager()
 
 void Manager::exec()
 {
-    // TODO: Add a mainwindow and move QueryDialog to mainwindow
-    if (GlobalStorage::instance()->get<int>(USER_ROLE) == Roles::Admin)
-    {
-        QueryDialog queryDialog;
-        queryDialog.exec();
-    }
-
     actionsHistory.push_back(Action(ActionType::ShowBattlefields));
     Action action;
 

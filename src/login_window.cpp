@@ -8,7 +8,7 @@
 #include "consts.h"
 #include "roles.h"
 
-#include "manager.h"
+#include "menu_dialog.h"
 
 
 LoginWindow::LoginWindow(QWidget *parent) :
@@ -31,8 +31,8 @@ void LoginWindow::on_pushButton_login_clicked()
     if (checkLogin(username, password))
         if (doLogin(username, password))
         {
-            close();
-            Manager m;
+            hide();
+            MenuDialog m;
             m.exec();
         }
 }

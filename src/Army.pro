@@ -35,7 +35,8 @@ SOURCES += \
     item_factory.cpp \
     action.cpp \
     db.cpp \
-    query_dialog.cpp
+    query_dialog.cpp \
+    menu_dialog.cpp
 
 HEADERS += \
     message_dialog.h \
@@ -52,13 +53,15 @@ HEADERS += \
     action.h \
     db.h \
     query_dialog.h \
-    querydata.h
+    querydata.h \
+    menu_dialog.h
 
 FORMS += \
     login_window.ui \
     form_dialog.ui \
     info_dialog.ui \
-    query_dialog.ui
+    query_dialog.ui \
+    menu_dialog.ui
 
 SUBDIRS += \
     Army.pro
