@@ -36,7 +36,8 @@ InfoDialog::InfoDialog(const QString &title, const QList<Item> &dataColumns,
     selectedAction(ActionType::None)
 {
     ui->setupUi(this);
-    setFixedSize(size());
+    // setFixedSize(size());
+    setWindowFlag(Qt::WindowMaximizeButtonHint, true);
     setWindowTitle(title);
 
     ui->tableWidget_data->setEditTriggers(QAbstractItemView::NoEditTriggers);

@@ -6,85 +6,66 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>959</width>
-    <height>596</height>
+    <width>968</width>
+    <height>634</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="pushButton_edit">
-   <property name="geometry">
-    <rect>
-     <x>230</x>
-     <y>540</y>
-     <width>93</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Edit</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_create">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>540</y>
-     <width>93</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Create</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_delete">
-   <property name="geometry">
-    <rect>
-     <x>410</x>
-     <y>540</y>
-     <width>93</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Delete</string>
-   </property>
-  </widget>
-  <widget class="QTableWidget" name="tableWidget_data">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>20</y>
-     <width>901</width>
-     <height>501</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_doAction">
-   <property name="geometry">
-    <rect>
-     <x>632</x>
-     <y>540</y>
-     <width>101</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Do Action</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboBox_actions">
-   <property name="geometry">
-    <rect>
-     <x>760</x>
-     <y>540</y>
-     <width>141</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMaximumSize</enum>
+     </property>
+     <item>
+      <widget class="QTableWidget" name="tableWidget_data"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_create">
+       <property name="text">
+        <string>Create</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_edit">
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_delete">
+       <property name="text">
+        <string>Delete</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="pushButton_doAction">
+         <property name="text">
+          <string>Do Action</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_actions"/>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
