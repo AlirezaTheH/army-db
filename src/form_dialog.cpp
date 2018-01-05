@@ -116,7 +116,16 @@ void FormDialog::on_pushButton_done_clicked()
                 if (items[i]->property<QString>(PATTERN) == DATETIME_PATTERN)
                 {
                     QDateTime dt = QDateTime::fromString(text, Qt::ISODate);
-                    if (dt.toSecsSinceEpoch() <= QDateTime::currentSecsSinceEpoch())
+                    if (items[i]->name() == "birth_datetime")
+                    {
+                        if (QDateTime::currentSecsSinceEpoch() - dt.toSecsSinceEpoch() < 18 * 365 * 24 * 3600)
+                        {
+                            error = ": the trooper is too young";
+                            MessageDialog::instance()->err(QString("%1 %2!").arg(items[i]->name(), error), this);
+                            return;
+                        }
+                    }
+                    else if (dt.toSecsSinceEpoch() <= QDateTime::currentSecsSinceEpoch())
                     {
                         error = "must be greater than now";
                         MessageDialog::instance()->err(QString("%1 %2!").arg(items[i]->name(), error), this);
