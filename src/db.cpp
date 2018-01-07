@@ -101,25 +101,6 @@ void DB::createAllEntityTables()
         ")"
     );
 
-    // create armies
-    query(
-        "create table if not exists armies ("
-        "id integer primary key autoincrement not null, "
-        "name varchar(128) not null, "
-        "force_type integer not null, "
-        "size_type integer not null, "
-        "position_latitude double not null, "
-        "position_longitude double not null, "
-        "radius double not null, "
-        "vehicle_capacity integer not null, "
-        "trooper_capacity integer not null, "
-        "base_fk integer not null, "
-        "commander_fk integer not null, "
-        "foreign key (base_fk) references bases(id), "
-        "foreign key (commander_fk) references troopers(id)"
-        ")"
-    );
-
     // create troopers
     query(
         "create table if not exists troopers ("
@@ -136,6 +117,26 @@ void DB::createAllEntityTables()
         "height double not null, "
         "is_single boolean not null, "
         "children_count integer not null"
+        ")"
+    );
+
+    // create armies
+    query(
+        "create table if not exists armies ("
+        "id integer primary key autoincrement not null, "
+        "name varchar(128) not null, "
+        "force_type integer not null, "
+        "size_type integer not null, "
+        "position_latitude double not null, "
+        "position_longitude double not null, "
+        "radius double not null, "
+        "vehicle_capacity integer not null, "
+        "trooper_capacity integer not null, "
+        "base_fk integer not null, "
+        "commander_fk integer not null, "
+        "foreign key (base_fk) references bases(id), "
+        "foreign key (commander_fk) references troopers(id)"
+        "add check (grade )"
         ")"
     );
 
