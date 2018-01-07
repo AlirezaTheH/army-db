@@ -136,7 +136,6 @@ void DB::createAllEntityTables()
         "commander_fk integer not null, "
         "foreign key (base_fk) references bases(id), "
         "foreign key (commander_fk) references troopers(id)"
-        "add check (grade )"
         ")"
     );
 
